@@ -1,7 +1,7 @@
 // src/routes.jsx
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import ProtectedRoute from "./utils/protectedRoute";
+import ProtectedRoute from "./utils/ProtectedRoute";
 import AdminProtectedRoute from "./utils/adminProtectedRoute";
 
 // Layouts
