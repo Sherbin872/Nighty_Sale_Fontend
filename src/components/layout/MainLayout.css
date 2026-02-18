@@ -1,0 +1,27 @@
+/* src/components/layout/MainLayout.css */
+:root {
+  /* Colors from the design */
+  --primary: #2D412F;
+  --primary-accent: #A3D48F;
+  --primary-muted: #C2E2B5;
+  --background-main: #A3D48F;
+  --cream: #FFFDD0;
+  --surface: #FFFDD0;
+  --text-main: #2D412F;
+  --text-light: #556B58;
+  --white: #FFFFFF;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+.main-layout {
+  width: 100% !important;
+  background-color: var(--primary-accent);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  padding: 1rem 0;
+}

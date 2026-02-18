@@ -1,0 +1,274 @@
+
+.product-card {
+  position: relative;
+  
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); */
+  width: 100%;
+  max-width: 240px !important;
+  margin: 0 auto;
+}
+
+/* .product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+} */
+
+.product-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* Image Container */
+.product-image-container {
+  border-radius: 55px;
+  position: relative;
+  aspect-ratio: 1/1.25;
+  overflow: hidden;
+  background: #f8f8f8;
+}
+
+.lazy-image-wrapper {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+/* .product-card:hover .product-image {
+  transform: scale(1.05);
+} */
+
+/* Quick Actions */
+.quick-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.quick-actions.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.quick-action-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  color: #333;
+  padding: 0;
+}
+
+.quick-action-btn:hover {
+  background: #FF6B8B;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 5px 12px rgba(255, 107, 139, 0.3);
+}
+
+.quick-action-btn:disabled {
+  background: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.quick-action-btn:disabled:hover {
+  background: #f0f0f0;
+  color: #999;
+}
+
+/* Badges */
+.product-badges {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 5;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge.out-of-stock {
+  background: rgba(244, 67, 54, 0.9);
+  color: white;
+}
+
+.badge.category {
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  backdrop-filter: blur(4px);
+}
+
+/* Product Info */
+.product-info {
+  height: 80px;
+  /* background-color: aqua; */
+  display: flex;
+  align-items: start;
+  gap: 0px !important;
+  justify-content: center;
+  padding-top: 4px !important;
+  padding-left: 0px !important;
+  flex-direction: column;
+  /* padding: 12px 10px 15px; */
+  text-align: center;
+}
+
+.product-name {
+  font-size: 0.9rem;
+  color: white !important;
+  /* margin: 0 0 8px; */
+  margin-bottom: 2px !important;
+  /* background-color: #FF6B8B; */
+  font-weight: 100 !important;
+  line-height: 1.4;
+  /* height: 2.5rem; */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+
+
+   font-family: "Libre Baskerville", serif;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.current-price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  /* background-color: blue; */
+  display: block;
+  margin-bottom: 0px !important;
+
+  font-family: "Libre Baskerville", serif;
+  font-optical-sizing: auto;
+  font-weight: 100 !important;
+  font-style: normal;
+}
+
+/* Responsive Grid - 4 cards per row */
+@media (min-width: 1200px) {
+  .product-card {
+    max-width: 280px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .product-card {
+    max-width: 240px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .product-card {
+    max-width: 220px;
+  }
+  
+  .quick-action-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+  
+  .product-name {
+    font-size: 0.85rem;
+  }
+  
+  .current-price {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .product-card {
+    max-width: 200px;
+  }
+  
+  .quick-actions {
+    gap: 5px;
+  }
+  
+  .quick-action-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
+  }
+  
+  .product-name {
+    font-size: 0.8rem;
+    height: 2.2rem;
+  }
+  
+  .current-price {
+    font-size: 0.9rem;
+  }
+}
+
+/* For very small screens - 2 cards per row */
+@media (max-width: 480px) {
+  .product-info {
+  height: 70px;
+}
+  .current-price {
+    margin-top: -13px !important;
+  }
+  .product-name {
+    margin-bottom: 0px !important;
+  }
+  .product-image-container {
+  border-radius: 15px;
+  position: relative;
+  /* aspect-ratio: 0.5/0.6; */
+  overflow: hidden;
+  background: #f8f8f8;
+}
+  .product-card {
+    max-width: 100%;
+  }
+  
+  .quick-action-btn {
+    width: 32px;
+    height: 32px;
+  }
+}

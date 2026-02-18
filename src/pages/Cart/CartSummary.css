@@ -1,0 +1,151 @@
+/* CartSummary.css */
+.cart-summary {
+  background-color: #fafafa;
+  border-radius: 8px;
+  padding: 2rem;
+  border: 1px solid #e5e5e5;
+}
+
+.summary-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.summary-details {
+  margin-bottom: 2rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.row-label {
+  font-size: 0.875rem;
+  color: #666666;
+}
+
+.row-value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #000000;
+}
+
+.row-value.free {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.discount-row {
+  background-color: #f0fdf4;
+  margin: 0 -2rem;
+  padding: 0.75rem 2rem;
+}
+
+.row-value.discount {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 0;
+  margin-top: 0.5rem;
+  border-top: 1px solid #e5e5e5;
+}
+
+.total-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.total-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #000000;
+}
+
+/* Checkout Button */
+.checkout-btn {
+  width: 100%;
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  padding: 1rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.checkout-btn:hover {
+  background-color: #333333;
+}
+
+.checkout-btn svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Payment Info */
+.payment-info {
+  text-align: center;
+}
+
+.payment-note {
+  font-size: 0.75rem;
+  color: #666666;
+  margin-bottom: 0.75rem;
+}
+
+.payment-icons {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.payment-icon {
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #666666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cart-summary {
+    padding: 1.5rem;
+  }
+  
+  .discount-row {
+    margin: 0 -1.5rem;
+    padding: 0.75rem 1.5rem;
+  }
+}

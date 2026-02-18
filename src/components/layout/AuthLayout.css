@@ -1,0 +1,22 @@
+/* src/components/layout/AuthLayout.css */
+.auth-layout {
+  min-height: 100vh;
+}
+
+.auth-layout-background {
+  background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.auth-layout-overlay {
+  width: 100%;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+}

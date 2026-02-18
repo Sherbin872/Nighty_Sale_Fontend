@@ -1,0 +1,504 @@
+<!doctype html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Nighty Sale - #A3D48F Collection</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2D412F", // Darker forest green for high contrast text on light backgrounds
+              "primary-accent": "#A3D48F", // The requested Theme Color
+              "primary-muted": "#C2E2B5", // Softer tint of the theme color
+              "background-main": "#A3D48F", // Main background as requested
+              cream: "#FFFDD0", // High-contrast cream as requested
+              surface: "#FFFDD0", // Section background (Cream)
+              "text-main": "#2D412F",
+              "text-light": "#556B58",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+              serif: ["Georgia", "serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              "2xl": "1rem",
+              "3xl": "1.5rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style type="text/tailwindcss">
+      @layer base {
+        body {
+          @apply bg-background-main text-text-main font-display antialiased pb-24 selection:bg-cream selection:text-primary;
+          min-height: max(884px, 100dvh);
+        }
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body>
+    <header
+      class="sticky top-0 z-50 bg-background-main/90 backdrop-blur-md px-4 py-3 flex items-center justify-between"
+    >
+      <button
+        class="flex items-center justify-center p-2 rounded-full hover:bg-white/10 transition-colors"
+      >
+        <span
+          class="material-symbols-outlined text-cream"
+          style="font-size: 24px"
+          >menu</span
+        >
+      </button>
+      <div
+        class="text-xl font-bold tracking-tight text-cream flex items-center gap-1.5"
+      >
+        <span class="size-2 bg-cream rounded-full"></span>
+        <span class="font-serif">Nighty Sale</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <button
+          class="flex items-center justify-center p-2 rounded-full hover:bg-white/10 transition-colors"
+        >
+          <span
+            class="material-symbols-outlined text-cream"
+            style="font-size: 24px"
+            >search</span
+          >
+        </button>
+        <button
+          class="flex items-center justify-center p-2 rounded-full hover:bg-white/10 transition-colors relative"
+        >
+          <span
+            class="material-symbols-outlined text-cream"
+            style="font-size: 24px"
+            >shopping_cart</span
+          >
+          <span
+            class="absolute top-1.5 right-1.5 size-2 bg-cream rounded-full ring-2 ring-background-main"
+          ></span>
+        </button>
+      </div>
+    </header>
+    <main class="flex flex-col w-full">
+      <div class="@container">
+        <div class="px-4 py-4">
+          <div
+            class="relative flex min-h-[500px] w-full flex-col justify-end overflow-hidden rounded-[2rem] bg-cover bg-center shadow-xl"
+            style="
+              background-image:
+                linear-gradient(
+                  rgba(163, 212, 143, 0.1) 0%,
+                  rgba(255, 253, 208, 0.4) 40%,
+                  rgba(255, 253, 208, 0.95) 100%
+                ),
+                url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuD8X7_yj4clwZ5CT_EImh68lNyEcwy581S45jfHEyNq6TgxtAohyU9DhpPBGdIn1OfoZ1GEm89CzgjSbPop3JmFRcARH66VqifWLC1IhSjwTQDSKCaihyomVAU6e6bJtjbQUZ68LT7R-EV6vquQwfdKObNCa-5cykL01fQOo9bJQpadc7wC7lMpmVCdXaUglBUvglaugqcuiU-xw3Jnx1WlO6yOb4ZuOcGRU-GfkWtEqTJtnpbK2mrj28nwo0IDNeQpGUn9QPDRISy1&quot;);
+            "
+          >
+            <div
+              class="relative z-10 flex flex-col gap-3 p-8 text-center sm:text-left"
+            >
+              <span
+                class="uppercase tracking-[0.2em] text-[10px] font-bold text-primary mb-1 bg-white px-3 py-1 rounded-full w-fit self-center sm:self-start shadow-sm"
+                >Exclusive Comfort</span
+              >
+              <h1
+                class="text-4xl font-serif italic leading-[1.1] tracking-tight text-primary @[480px]:text-5xl"
+              >
+                Serene Evenings
+              </h1>
+              <p
+                class="text-text-main/80 text-sm font-light mb-4 max-w-[280px] mx-auto sm:mx-0"
+              >
+                Rediscover relaxation with our premium sage-inspired lounge
+                collection.
+              </p>
+              <div
+                class="flex flex-wrap gap-3 mt-1 justify-center sm:justify-start"
+              >
+                <button
+                  class="flex h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-primary px-8 text-base font-bold tracking-wide text-cream shadow-lg transition-transform active:scale-95"
+                >
+                  Shop Now
+                </button>
+                <button
+                  class="flex h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-white/40 backdrop-blur-md border border-primary/10 px-6 text-base font-bold tracking-wide text-primary transition-transform active:scale-95"
+                >
+                  Our Story
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="w-full overflow-x-auto no-scrollbar py-2 pl-4 mb-4">
+        <div class="flex gap-3 pr-4">
+          <button
+            class="flex h-10 min-w-max items-center justify-center rounded-full bg-cream px-6 text-sm font-bold text-primary shadow-md"
+          >
+            All Sets
+          </button>
+          <button
+            class="flex h-10 min-w-max items-center justify-center rounded-full bg-white/20 border border-white/30 px-6 text-sm font-medium text-cream backdrop-blur-sm transition-colors"
+          >
+            Silk Satins
+          </button>
+          <button
+            class="flex h-10 min-w-max items-center justify-center rounded-full bg-white/20 border border-white/30 px-6 text-sm font-medium text-cream backdrop-blur-sm transition-colors"
+          >
+            Organic Cotton
+          </button>
+          <button
+            class="flex h-10 min-w-max items-center justify-center rounded-full bg-white/20 border border-white/30 px-6 text-sm font-medium text-cream backdrop-blur-sm transition-colors"
+          >
+            Velvet Dreams
+          </button>
+        </div>
+      </div>
+      <div class="flex flex-col pt-4 pb-2 bg-cream/10 rounded-t-[3rem] mt-4">
+        <div class="flex items-center justify-between px-6 mb-6">
+          <h2 class="text-xl font-serif text-cream">Editor's Choice</h2>
+          <a
+            class="text-sm font-bold text-white flex items-center gap-0.5"
+            href="#"
+            >Explore All
+            <span class="material-symbols-outlined text-[16px]"
+              >arrow_forward</span
+            ></a
+          >
+        </div>
+        <div class="grid grid-cols-2 gap-4 px-4">
+          <div class="group flex flex-col gap-3">
+            <div
+              class="relative aspect-[3/4] w-full overflow-hidden rounded-[1.5rem] bg-cream shadow-md"
+            >
+              <div
+                class="absolute right-3 top-3 z-10 rounded-full bg-white/90 p-2 backdrop-blur-sm shadow-sm"
+              >
+                <span
+                  class="material-symbols-outlined text-primary-accent text-[20px] leading-none"
+                  style="font-variation-settings: &quot;FILL&quot; 1"
+                  >favorite</span
+                >
+              </div>
+              <div
+                class="h-full w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                style="
+                  background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuD63tBh0vxtSv7QhVEESOzqJ4xCOrshpzlx8ELPc8C2a5zJcWlbCLeELsPaMc01HydR7tM9zb5xyIhgoCipgNrs9Ilg4bzhAemGuyrX3cnJsSaRrXSMktAOZv4cIBC_Q-W7SkfOLfSQ3u8x99CrwNhngDjXJ7xXHWvlY72X2WgWomGXmok_7YkfZDLsxrKTErQjt0xfaCSw4EHbFV6LGb03xwyTf3SPWPxBIALGvy0lStxvhRaka7bITT_2Bk-P84AarK9W-TOZZDOh&quot;);
+                "
+              ></div>
+              <div
+                class="absolute bottom-3 left-3 rounded-lg bg-primary-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-primary shadow-sm"
+              >
+                Bestseller
+              </div>
+            </div>
+            <div class="px-2">
+              <h3 class="truncate text-base font-semibold text-cream">
+                Pista Silk Set
+              </h3>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span class="text-base font-bold text-cream">$68.00</span>
+                <span class="text-xs text-cream/60 line-through font-medium"
+                  >$85.00</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="group flex flex-col gap-3">
+            <div
+              class="relative aspect-[3/4] w-full overflow-hidden rounded-[1.5rem] bg-cream shadow-md"
+            >
+              <div
+                class="absolute right-3 top-3 z-10 rounded-full bg-white/90 p-2 backdrop-blur-sm shadow-sm"
+              >
+                <span
+                  class="material-symbols-outlined text-primary-accent/40 text-[20px] leading-none"
+                  >favorite</span
+                >
+              </div>
+              <div
+                class="h-full w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                style="
+                  background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDg74GC1ZoaH_v0UdJORaoViwEFWUB7HsDbMBAolOixvolKFbUOKILmrlcV9QBXr7PEeGLFSHBu9OjGY_crp_RjLt4rz_JmfpeWWoALs9vWX0d9PNkHCGefDXrhH0MEc6PnBDb_gbTu8huaAFE30rT-PfTTYwmh8IEIg8rhz1ddYGMx1-Ase3h5Xzgf8nApYgbOr6dHeVCpsL8aRTeVEJrQkFGyRTTAKEAYQXtQ6yHFqYV1P6xBKqbPMvRYThAqSySOTWegTXQcQmlV&quot;);
+                "
+              ></div>
+            </div>
+            <div class="px-2">
+              <h3 class="truncate text-base font-semibold text-cream">
+                Cotton Whisper
+              </h3>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span class="text-base font-bold text-cream">$42.00</span>
+              </div>
+            </div>
+          </div>
+          <div class="group flex flex-col gap-3">
+            <div
+              class="relative aspect-[3/4] w-full overflow-hidden rounded-[1.5rem] bg-cream shadow-md"
+            >
+              <div
+                class="absolute right-3 top-3 z-10 rounded-full bg-white/90 p-2 backdrop-blur-sm shadow-sm"
+              >
+                <span
+                  class="material-symbols-outlined text-primary-accent/40 text-[20px] leading-none"
+                  >favorite</span
+                >
+              </div>
+              <div
+                class="h-full w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                style="
+                  background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBhBM0EbR5VoAyt5dWWOEsDJHC_waJvxQNKjvDDvgwF4rYSGr2MQQ9mF9_CH1CN2F6_Runs3Q8p-IBV_xCS9zi6vXUpdlviy8Lzo18F3ahJ-x2ONzqVkFhnjSTtY5oUnQ-LKJzeByQ4aQ2C4kMepDo7ELBGHLDPORxzphT7bHjcpdGysLBom0i-0-J7U-Yg33v1G0UwpFGNMLm4NPMJoHyniSGC2rMRCvp-QnlRyrscLsgspdxEvjI1znKr0zsi5rzOb4OLKb2TYdsi&quot;);
+                "
+              ></div>
+              <div
+                class="absolute bottom-3 left-3 rounded-lg bg-primary px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-cream shadow-sm"
+              >
+                New Arrival
+              </div>
+            </div>
+            <div class="px-2">
+              <h3 class="truncate text-base font-semibold text-cream">
+                Jade Lace Gown
+              </h3>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span class="text-base font-bold text-cream">$75.00</span>
+              </div>
+            </div>
+          </div>
+          <div class="group flex flex-col gap-3">
+            <div
+              class="relative aspect-[3/4] w-full overflow-hidden rounded-[1.5rem] bg-cream shadow-md"
+            >
+              <div
+                class="absolute right-3 top-3 z-10 rounded-full bg-white/90 p-2 backdrop-blur-sm shadow-sm"
+              >
+                <span
+                  class="material-symbols-outlined text-primary-accent/40 text-[20px] leading-none"
+                  >favorite</span
+                >
+              </div>
+              <div
+                class="h-full w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                style="
+                  background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuAHzcAYjDTgiQ2ww99RR0ubpFjk1JfIlemv4lHGVLKykGKlg1o81q7tDPaaGeXgwrQX2fYh2yHGzNahA3w7lBTUEN_if7ZFyFEkAXHLbvsdjfTMY8CNyM8C-rjN1lUfsoHc8TWQoBjHKb770NBsYJx1oCB4lNQK9zQL-uqHl3OyB8zcZcVzHdDNCncKZ4Rc3WI-qUTKsmNQTvotI5jWb3RPqiOfwukco_9uCzQ-L9RPk-jmgQU1Lw8FMigC0cUAXdKl3iobpwWI9GKb&quot;);
+                "
+              ></div>
+            </div>
+            <div class="px-2">
+              <h3 class="truncate text-base font-semibold text-cream">
+                Verdant Satin Robe
+              </h3>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span class="text-base font-bold text-cream">$58.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="py-12 px-4">
+        <div
+          class="bg-surface border border-white/20 rounded-[2.5rem] p-8 flex flex-row justify-between items-center gap-4 shadow-xl"
+        >
+          <div class="flex flex-col items-center gap-3 text-center flex-1">
+            <span class="material-symbols-outlined text-primary-accent text-3xl"
+              >local_shipping</span
+            >
+            <p
+              class="text-[9px] font-bold text-primary/70 uppercase tracking-[0.15em] leading-relaxed"
+            >
+              Conscious<br />Shipping
+            </p>
+          </div>
+          <div class="w-px h-10 bg-primary-accent/20"></div>
+          <div class="flex flex-col items-center gap-3 text-center flex-1">
+            <span class="material-symbols-outlined text-primary-accent text-3xl"
+              >eco</span
+            >
+            <p
+              class="text-[9px] font-bold text-primary/70 uppercase tracking-[0.15em] leading-relaxed"
+            >
+              Pure<br />Botanicals
+            </p>
+          </div>
+          <div class="w-px h-10 bg-primary-accent/20"></div>
+          <div class="flex flex-col items-center gap-3 text-center flex-1">
+            <span class="material-symbols-outlined text-primary-accent text-3xl"
+              >verified_user</span
+            >
+            <p
+              class="text-[9px] font-bold text-primary/70 uppercase tracking-[0.15em] leading-relaxed"
+            >
+              Premium<br />Quality
+            </p>
+          </div>
+        </div>
+      </div>
+      <footer
+        class="px-8 py-12 bg-surface mt-4 mb-8 rounded-t-[3.5rem] shadow-[0_-20px_40px_rgba(0,0,0,0.05)]"
+      >
+        <div class="grid grid-cols-2 gap-x-12 gap-y-10 mb-12">
+          <div class="flex flex-col gap-5">
+            <h4
+              class="font-bold text-primary text-xs uppercase tracking-widest"
+            >
+              Atelier
+            </h4>
+            <a
+              class="text-sm text-text-light hover:text-primary-accent transition-colors"
+              href="#"
+              >Heritage</a
+            >
+            <a
+              class="text-sm text-text-light hover:text-primary-accent transition-colors"
+              href="#"
+              >Sustainability</a
+            >
+            <a
+              class="text-sm text-text-light hover:text-primary-accent transition-colors"
+              href="#"
+              >Press</a
+            >
+          </div>
+          <div class="flex flex-col gap-5">
+            <h4
+              class="font-bold text-primary text-xs uppercase tracking-widest"
+            >
+              Concierge
+            </h4>
+            <a
+              class="text-sm text-text-light hover:text-primary-accent transition-colors"
+              href="#"
+              >Orders</a
+            >
+            <a
+              class="text-sm text-text-light hover:text-primary-accent transition-colors"
+              href="#"
+              >Care Guide</a
+            >
+            <a
+              class="text-sm text-text-light hover:text-primary-accent transition-colors"
+              href="#"
+              >Shipping</a
+            >
+          </div>
+        </div>
+        <div
+          class="flex items-center justify-between border-t border-primary-accent/20 pt-10"
+        >
+          <div class="flex flex-col">
+            <div
+              class="text-xl font-bold tracking-tight text-primary font-serif"
+            >
+              Nighty Sale
+            </div>
+            <span
+              class="text-[10px] text-text-light/50 uppercase tracking-widest mt-1"
+              >Timeless Comfort</span
+            >
+          </div>
+          <div class="flex gap-5">
+            <a
+              class="text-text-light/60 hover:text-primary-accent transition-colors"
+              href="#"
+              ><span class="material-symbols-outlined text-xl"
+                >camera_alt</span
+              ></a
+            >
+            <a
+              class="text-text-light/60 hover:text-primary-accent transition-colors"
+              href="#"
+              ><span class="material-symbols-outlined text-xl"
+                >brand_awareness</span
+              ></a
+            >
+          </div>
+        </div>
+        <p
+          class="text-[10px] text-text-light/30 mt-10 text-center uppercase tracking-widest"
+        >
+          © 2024 Nighty Sale. Theme #A3D48F.
+        </p>
+      </footer>
+    </main>
+    <nav
+      class="fixed bottom-0 left-0 z-50 w-full bg-cream/95 backdrop-blur-2xl border-t border-white/30 pb-6 pt-3 px-4 shadow-[0_-10px_30px_rgba(0,0,0,0.08)]"
+    >
+      <div class="flex items-center justify-around h-14 max-w-md mx-auto">
+        <a
+          class="flex flex-col items-center gap-1.5 w-full text-primary"
+          href="#"
+        >
+          <span
+            class="material-symbols-outlined text-[26px]"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >home</span
+          >
+          <span class="text-[9px] font-bold uppercase tracking-wider"
+            >Home</span
+          >
+        </a>
+        <a
+          class="flex flex-col items-center gap-1.5 w-full text-text-light/40 hover:text-primary transition-colors group"
+          href="#"
+        >
+          <span
+            class="material-symbols-outlined text-[26px] group-active:scale-90 transition-transform"
+            >auto_awesome_motion</span
+          >
+          <span class="text-[9px] font-bold uppercase tracking-wider"
+            >Boutique</span
+          >
+        </a>
+        <a
+          class="flex flex-col items-center gap-1.5 w-full text-text-light/40 hover:text-primary transition-colors group"
+          href="#"
+        >
+          <span
+            class="material-symbols-outlined text-[26px] group-active:scale-90 transition-transform"
+            >favorite</span
+          >
+          <span class="text-[9px] font-bold uppercase tracking-wider"
+            >Saved</span
+          >
+        </a>
+        <a
+          class="flex flex-col items-center gap-1.5 w-full text-text-light/40 hover:text-primary transition-colors group"
+          href="#"
+        >
+          <span
+            class="material-symbols-outlined text-[26px] group-active:scale-90 transition-transform"
+            >person_2</span
+          >
+          <span class="text-[9px] font-bold uppercase tracking-wider"
+            >Profile</span
+          >
+        </a>
+      </div>
+    </nav>
+  </body>
+</html>

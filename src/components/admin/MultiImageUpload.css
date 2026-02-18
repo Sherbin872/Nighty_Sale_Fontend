@@ -1,0 +1,256 @@
+/* src/components/admin/MultiImageUpload.css */
+.multi-image-upload {
+  width: 100%;
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.upload-header h4 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.image-count {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.drop-zone {
+  border: 2px dashed #dee2e6;
+  border-radius: 10px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drop-zone:hover:not(.uploading) {
+  border-color: #81c784;
+  background: rgba(129, 199, 132, 0.05);
+}
+
+.drop-zone.dragging {
+  border-color: #81c784;
+  background: rgba(129, 199, 132, 0.1);
+}
+
+.drop-zone.uploading {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.empty-drop-zone {
+  color: #6c757d;
+}
+
+.upload-icon {
+  width: 48px;
+  height: 48px;
+  color: #adb5bd;
+  margin-bottom: 1rem;
+}
+
+.uploading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.upload-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(129, 199, 132, 0.3);
+  border-radius: 50%;
+  border-top-color: #81c784;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+
+.image-item {
+  position: relative;
+}
+
+.image-wrapper {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.image-wrapper:hover {
+  border-color: #81c784;
+  transform: translateY(-2px);
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 50%);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.5rem;
+}
+
+.image-number {
+  width: 24px;
+  height: 24px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.featured-badge {
+  background: #81c784;
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 24px;
+  height: 24px;
+  background: rgba(220, 53, 69, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+
+.image-wrapper:hover .remove-btn {
+  opacity: 1;
+}
+
+.remove-btn:hover {
+  background: #dc3545;
+  transform: scale(1.1);
+}
+
+.featured-label {
+  display: block;
+  text-align: center;
+  margin-top: 0.25rem;
+  color: #81c784;
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+
+.add-more {
+  aspect-ratio: 1;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+}
+
+.add-more:hover {
+  border-color: #81c784;
+  background: rgba(129, 199, 132, 0.05);
+}
+
+.add-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #81c784;
+  color: white;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.add-more p {
+  margin: 0;
+  color: #495057;
+  font-weight: 500;
+}
+
+.add-more small {
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+.upload-info {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #e8f5e9;
+  border-radius: 8px;
+  border-left: 4px solid #81c784;
+}
+
+.upload-info p {
+  margin: 0 0 0.5rem 0;
+  color: #2e7d32;
+}
+
+.upload-info ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #555;
+}
+
+.upload-info li {
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+}

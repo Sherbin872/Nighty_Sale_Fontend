@@ -1,0 +1,73 @@
+/* src/pages/Register/Register.css */
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 2rem;
+}
+
+.register-container {
+  width: 100%;
+  max-width: 500px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.register-header h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.register-header p {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.register-form {
+  margin-bottom: 1.5rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-col {
+  flex: 1;
+}
+
+.terms-agreement {
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.terms-agreement .link {
+  color: #81c784;
+  text-decoration: none;
+}
+
+.terms-agreement .link:hover {
+  text-decoration: underline;
+}
+
+.register-footer {
+  text-align: center;
+  color: #666;
+  font-size: 0.95rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
