@@ -137,7 +137,8 @@
 }
 
 /* Product Info */
-.product-info {
+.pproduct-info {
+  margin-top: 0px !important;
   height: 80px;
   /* background-color: aqua; */
   display: flex;
@@ -247,7 +248,7 @@
 
 /* For very small screens - 2 cards per row */
 @media (max-width: 480px) {
-  .product-info {
+  .pproduct-info {
   height: 70px;
 }
   .current-price {
