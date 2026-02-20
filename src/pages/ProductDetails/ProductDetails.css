@@ -883,9 +883,13 @@
   }
 
   .product-details-content {
+    display: flex !important;
+    flex-direction: column !important;
     grid-template-columns: 1fr;
   }
-
+.product-images {
+  width: 300px;
+}
   .product-title {
     font-size: 1.75rem;
     color: white;
@@ -915,7 +919,7 @@
   }
 
   .related-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, minmax(20px, 1fr));
     gap: 1rem;
   }
 
@@ -925,6 +929,12 @@
     top: 1rem;
     text-align: center;
   }
+  .section-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 }
 
 @media (max-width: 480px) {
