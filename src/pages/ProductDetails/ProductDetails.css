@@ -888,7 +888,7 @@
     grid-template-columns: 1fr;
   }
 .product-images {
-  width: 300px;
+  width: 100% !important;
 }
   .product-title {
     font-size: 1.75rem;
