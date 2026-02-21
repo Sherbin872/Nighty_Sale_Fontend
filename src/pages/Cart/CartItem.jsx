@@ -53,7 +53,7 @@ const CartItem = memo(
               <div className="product-variants">
                 {/* <span className="product-color">{productColor}</span>
             <span className="divider">•</span> */}
-                <span className="product-size">{size}</span>
+                <p className="product-size">{size}</p>
               </div>
             </div>
             <button
