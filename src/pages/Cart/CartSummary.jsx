@@ -18,7 +18,7 @@ const CartSummary = memo(({
       <div className="summary-details">
         <div className="summary-row">
           <span className="row-label">Subtotal ({itemCount} {itemCount === 1 ? 'item' : 'items'})</span>
-          <span className="row-value">${subtotal.toFixed(2)}</span>
+          <span className="row-value">₹{subtotal.toFixed(2)}</span>
         </div>
         
         <div className="summary-row">
@@ -31,18 +31,18 @@ const CartSummary = memo(({
         {promoApplied && discount > 0 && (
           <div className="summary-row discount-row">
             <span className="row-label">Discount (10%)</span>
-            <span className="row-value discount">-${discount.toFixed(2)}</span>
+            <span className="row-value discount">-₹{discount.toFixed(2)}</span>
           </div>
         )}
         
-        <div className="summary-row">
+        {/* <div className="summary-row">
           <span className="row-label">Tax</span>
-          <span className="row-value">${tax.toFixed(2)}</span>
-        </div>
+          <span className="row-value">₹{tax.toFixed(2)}</span>
+        </div> */}
         
         <div className="total-row">
           <span className="total-label">TOTAL AMOUNT</span>
-          <span className="total-value">${total.toFixed(2)}</span>
+          <span className="total-value">₹{total.toFixed(2)}</span>
         </div>
       </div>
       

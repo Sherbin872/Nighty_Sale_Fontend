@@ -86,7 +86,8 @@ const Cart = () => {
     const shipping = subtotal > 50 ? 0 : 5.99;
     
     // Calculate tax (2% of subtotal based on your example)
-    const tax = subtotal * 0.02;
+    const tax = 0;
+    // const tax = subtotal * 0.02;
     
     // Apply promo discount (10% off)
     const discount = promoApplied ? subtotal * 0.1 : 0;
@@ -245,7 +246,7 @@ const Cart = () => {
             </div>
 
             {/* Promo Code Section */}
-            <div className="promo-section">
+            {/* <div className="promo-section">
               <div className="promo-input-group">
                 <input
                   type="text"
@@ -272,7 +273,7 @@ const Cart = () => {
                   <span>Promo code applied! 10% discount</span>
                 </div>
               )}
-            </div>
+            </div> */}
 
             {/* Continue Shopping */}
             <div className="continue-shopping">
