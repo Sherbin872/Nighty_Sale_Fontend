@@ -154,7 +154,7 @@ const Register = () => {
           </div>
 
           <Input
-            label="Phone Number (Optional)"
+            label="Phone Number"
             type="tel"
             name="phone"
             value={formData.phone}

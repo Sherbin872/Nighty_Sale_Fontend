@@ -1,11 +1,12 @@
 /* src/pages/Register/Register.css */
 .register-page {
+  margin-top: 60px;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  padding: 2rem;
+  /* padding: 2rem; */
 }
 
 .register-container {
