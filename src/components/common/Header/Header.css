@@ -41,8 +41,20 @@
   justify-content: space-between;
   padding: 1rem 2.5rem;
 }
-
+.mobile_logo{
+  display: none !important;
+}
 /* Logo */
+.logo img{
+  /* height: 50px; */
+  border-radius: 15px ;
+  height: 80px;
+  /* width: 170px; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
 .logo a {
   text-decoration: none;
   font-family: 'Georgia', serif;
@@ -480,6 +492,14 @@
   .header-content {
     padding: 0.5rem 1rem;
   }
+  .mainLogo{
+    /* display: none !important; */
+    height: 60px !important;
+  }
+  /* .mobile_logo{
+    display: flex !important;
+    border-radius: 50% !important;
+  } */
 
   .logo-text {
     font-size: 1.3rem;

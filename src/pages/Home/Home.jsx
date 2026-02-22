@@ -5,6 +5,7 @@ import Listings from '../../components/product/Listings';
 import './Home.css';
 
 const Home = () => {
+  
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,30 +15,33 @@ const Home = () => {
   const [activeCategory, setActiveCategory] = useState('all');
 
   const fetchProducts = async (pageNum = 1, category = '') => {
-    try {
-      setLoading(true);
-      let data;
+  try {
+    setLoading(true);
+    let data;
+
+    if (category && category !== 'all') {
+      data = await productApi.getProductsByCategory(category, pageNum);
+      console.log("datas: ",data);
       
-      if (category && category !== 'all') {
-        data = await productApi.getProductsByCategory(category);
-      } else {
-        data = await productApi.getProducts('', pageNum);
-      }
-      
-      if (pageNum === 1) {
-        setProducts(data.products);
-      } else {
-        setProducts(prev => [...prev, ...data.products]);
-      }
-      
-      setHasMore(data.page < data.pages);
-      setError(null);
-    } catch (err) {
-      setError(err.message || 'Failed to load products');
-    } finally {
-      setLoading(false);
+    } else {
+      data = await productApi.getProducts('', pageNum);
     }
-  };
+
+    if (pageNum === 1) {
+      setProducts(data.products);
+    } else {
+      setProducts(prev => [...prev, ...data.products]);
+    }
+
+    setHasMore(data.page < data.pages);
+    setError(null);
+  } catch (err) {
+    setError(err.message || 'Failed to load products');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const fetchCategories = async () => {
     try {
@@ -50,9 +54,20 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchProducts(1, activeCategory);
-    fetchCategories();
-  }, [activeCategory]);
+  setPage(1);
+  fetchProducts(1, activeCategory);
+  console.log('Active category changed:', activeCategory);
+}, [activeCategory]);
+
+useEffect(() => {
+  fetchCategories();
+}, []);
+
+
+  // useEffect(() => {
+  //   fetchProducts(1, activeCategory);
+  //   fetchCategories();
+  // }, [activeCategory]);
 
   const handleLoadMore = () => {
     const nextPage = page + 1;
@@ -87,7 +102,7 @@ const Home = () => {
       </div>
 
       {/* Category Filter */}
-      <div className="category-scroll">
+      {/* <div className="category-scroll">
         <div className="category-list">
           <button 
             className={`category-btn ${activeCategory === 'all' ? 'active' : ''}`}
@@ -105,7 +120,7 @@ const Home = () => {
             </button>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Editor's Choice */}
       <div className="editors-choice-section">

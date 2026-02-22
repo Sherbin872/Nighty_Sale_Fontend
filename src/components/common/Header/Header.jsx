@@ -78,9 +78,15 @@ const Header = () => {
         {/* Logo */}
         <div className="logo">
           <Link to="/" onClick={closeMobileMenu}>
-            <h1 className="logo-text">Nighty Sale</h1>
+            <img className="mainLogo" height={95} src="https://res.cloudinary.com/de1gl8ka7/image/upload/v1771772044/manavaati_y1ei4k.jpg" alt="" />
+            <img className="mobile_logo" src="https://res.cloudinary.com/de1gl8ka7/image/upload/v1771772701/mobile_xtaoww.jpg" alt="" />
           </Link>
         </div>
+        {/* <div className="logo">
+          <Link to="/" onClick={closeMobileMenu}>
+            <h1 className="logo-text">Nighty Sale</h1>
+          </Link>
+        </div> */}
 
         {/* Desktop Navigation */}
         <nav className="nav desktop-nav">
