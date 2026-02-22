@@ -1,4 +1,3 @@
-// src/pages/admin/AddEditProduct.jsx - Updated for multiple images
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,7 +10,7 @@ import {
 import Alert from '../../components/common/Alert/Alert';
 import Loader from '../../components/common/Loader';
 import MultiImageUpload from '../../components/admin/MultiImageUpload';
-import './AddEditProduct.css';
+import './AddEditProduct.css'; // New dedicated CSS
 
 const AddEditProduct = () => {
   const { id } = useParams();
@@ -28,9 +27,9 @@ const AddEditProduct = () => {
     price: 0,
     description: '',
     brand: '',
-    category: 'Cotton',
+    category: '', // Now starts empty for typing
     countInStock: 0,
-    sizes: ['L'],
+    sizes: [], // Starts empty
     image: {
       public_id: '',
       original: '',
@@ -39,16 +38,15 @@ const AddEditProduct = () => {
       large: '',
       placeholder: ''
     },
-    additionalImages: [] // Array of image objects
+    additionalImages: []
   });
 
-  const [imageFiles, setImageFiles] = useState([]); // Temporary files before upload
+  const [imageFiles, setImageFiles] = useState([]); 
   const [uploadingImages, setUploadingImages] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
-  // Categories and sizes
-  const categories = ['Cotton', 'Satin', 'Silk', 'Rayon', 'Maternity'];
-  const sizeOptions = ['M', 'L', 'XL', 'XXL', '3XL'];
+  // Available size options for the checkboxes
+  const sizeOptions = ['S', 'M', 'L', 'XL', 'XXL', '3XL', 'Free Size'];
 
   // Initialize form data if editing
   useEffect(() => {
@@ -58,195 +56,132 @@ const AddEditProduct = () => {
         price: product.price || 0,
         description: product.description || '',
         brand: product.brand || '',
-        category: product.category || 'Cotton',
+        category: product.category || '',
         countInStock: product.countInStock || 0,
-        sizes: product.sizes || ['L'],
+        sizes: product.sizes || [],
         image: product.image || {
-          public_id: '',
-          original: '',
-          thumbnail: '',
-          medium: '',
-          large: '',
-          placeholder: ''
+          public_id: '', original: '', thumbnail: '', medium: '', large: '', placeholder: ''
         },
         additionalImages: product.additionalImages || []
       });
     }
   }, [isEditMode, product, id]);
 
-  // Handle success
+  // Handle success redirect
   useEffect(() => {
     if (success) {
       const timer = setTimeout(() => {
         dispatch(clearProductState());
         navigate('/admin/products');
-      }, 2000);
+      }, 1500);
       return () => clearTimeout(timer);
     }
   }, [success, navigate, dispatch]);
 
-  // Cleanup
+  // Cleanup blob URLs
   useEffect(() => {
     return () => {
       dispatch(clearProductState());
-      // Clean up blob URLs
       imageFiles.forEach(file => {
-        if (file.preview) {
-          URL.revokeObjectURL(file.preview);
-        }
+        if (file.preview) URL.revokeObjectURL(file.preview);
       });
     };
   }, [dispatch, imageFiles]);
 
-  // Handle image selection
+  // Image Handlers (Kept exactly as you wrote them)
   const handleImagesSelect = useCallback(async (files) => {
-    // Create preview URLs
     const filesWithPreview = files.map(file => ({
-      file,
-      preview: URL.createObjectURL(file),
-      uploading: false,
-      uploaded: false
+      file, preview: URL.createObjectURL(file), uploading: false, uploaded: false
     }));
-    
     setImageFiles(prev => [...prev, ...filesWithPreview]);
-    
-    // Upload images immediately
     await uploadImagesToCloudinary(filesWithPreview);
   }, []);
 
-  // Upload images to Cloudinary
   const uploadImagesToCloudinary = async (filesToUpload) => {
     setUploadingImages(true);
     setUploadProgress(0);
-    
     try {
-      const formData = new FormData();
-      console.log('FILES TO UPLOAD:', filesToUpload);
-
-      filesToUpload.forEach((item, index) => {
-        formData.append('images', item.file);
-      });
+      const uploadData = new FormData();
+      filesToUpload.forEach(item => uploadData.append('images', item.file));
         
-      const result = await dispatch(uploadProductImages(formData)).unwrap();
+      const result = await dispatch(uploadProductImages(uploadData)).unwrap();
       
       if (result.images && result.images.length > 0) {
-        // Process uploaded images
         const uploadedImages = result.images;
-        
-        // First image becomes main image
         const mainImage = uploadedImages[0];
         const additionalImages = uploadedImages.slice(1);
         
-        // Update form data
         setFormData(prev => ({
           ...prev,
           image: mainImage,
           additionalImages: [...prev.additionalImages, ...additionalImages]
         }));
         
-        // Update file states
-        setImageFiles(prev => 
-          prev.map((item, index) => ({
-            ...item,
-            uploading: false,
-            uploaded: true,
-            cloudinaryData: uploadedImages[index] || null
-          }))
-        );
+        setImageFiles(prev => prev.map((item, index) => ({
+            ...item, uploading: false, uploaded: true, cloudinaryData: uploadedImages[index] || null
+        })));
       }
-      
       setUploadProgress(100);
-      
     } catch (error) {
-      console.error('Image upload failed:', error);
       alert(`Failed to upload images: ${error.message || 'Unknown error'}`);
-      
-      // Reset failed uploads
-      setImageFiles(prev => 
-        prev.map(item => ({
-          ...item,
-          uploading: false,
-          uploaded: false
-        }))
-      );
+      setImageFiles(prev => prev.map(item => ({...item, uploading: false, uploaded: false})));
     } finally {
       setUploadingImages(false);
     }
   };
 
-  // Remove image
   const handleImageRemove = useCallback((index) => {
     if (index === 0) {
-      // Removing main image
       const newMainImage = formData.additionalImages[0] || null;
       const newAdditionalImages = formData.additionalImages.slice(1);
-      
       setFormData(prev => ({
         ...prev,
-        image: newMainImage || {
-          public_id: '',
-          original: '',
-          thumbnail: '',
-          medium: '',
-          large: '',
-          placeholder: ''
-        },
+        image: newMainImage || { public_id: '', original: '', thumbnail: '', medium: '', large: '', placeholder: '' },
         additionalImages: newAdditionalImages
       }));
     } else {
-      // Removing additional image (adjust index since 0 is main image)
       const adjustedIndex = index - 1;
       setFormData(prev => ({
         ...prev,
         additionalImages: prev.additionalImages.filter((_, i) => i !== adjustedIndex)
       }));
     }
-    
-    // Clean up blob URL
-    if (imageFiles[index]?.preview) {
-      URL.revokeObjectURL(imageFiles[index].preview);
-    }
-    
+    if (imageFiles[index]?.preview) URL.revokeObjectURL(imageFiles[index].preview);
     setImageFiles(prev => prev.filter((_, i) => i !== index));
   }, [formData, imageFiles]);
 
-  // Combine all images for display
-  const allImages = [
-    formData.image,
-    ...formData.additionalImages
-  ].filter(img => img && img.original);
+  const allImages = [formData.image, ...formData.additionalImages].filter(img => img && img.original);
 
+  // Input Handlers
   const handleChange = (e) => {
     const { name, value, type } = e.target;
-    
     if (type === 'number') {
-      setFormData(prev => ({
-        ...prev,
-        [name]: parseFloat(value) || 0
-      }));
-    } else if (name === 'sizes') {
-      const options = Array.from(e.target.selectedOptions, option => option.value);
-      setFormData(prev => ({
-        ...prev,
-        sizes: options
-      }));
+      setFormData(prev => ({ ...prev, [name]: parseFloat(value) || 0 }));
     } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
+  // Custom Handler for Size Checkboxes
+  const handleSizeToggle = (size) => {
+    setFormData(prev => {
+      const newSizes = prev.sizes.includes(size)
+        ? prev.sizes.filter(s => s !== size)
+        : [...prev.sizes, size];
+      return { ...prev, sizes: newSizes };
+    });
+  };
+
+  // Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validation
     const errors = [];
     if (!formData.name.trim()) errors.push('Product name is required');
     if (formData.price <= 0) errors.push('Price must be greater than 0');
     if (!formData.image.original) errors.push('Please upload at least one product image');
     if (!formData.brand.trim()) errors.push('Brand is required');
+    if (!formData.category.trim()) errors.push('Category is required');
     if (!formData.description.trim()) errors.push('Description is required');
     if (formData.sizes.length === 0) errors.push('Select at least one size');
     
@@ -255,13 +190,12 @@ const AddEditProduct = () => {
       return;
     }
 
-    // Prepare data for submission
     const productData = {
       name: formData.name.trim(),
       price: parseFloat(formData.price),
       description: formData.description.trim(),
       brand: formData.brand.trim(),
-      category: formData.category,
+      category: formData.category.trim(),
       countInStock: parseInt(formData.countInStock),
       sizes: formData.sizes,
       image: formData.image,
@@ -272,11 +206,7 @@ const AddEditProduct = () => {
       if (isEditMode) {
         await dispatch(updateProduct({ id, productData })).unwrap();
       } else {
-        const productWithUser = {
-          ...productData,
-          user: user?._id
-        };
-        await dispatch(createProduct(productWithUser)).unwrap();
+        await dispatch(createProduct({ ...productData, user: user?._id })).unwrap();
       }
     } catch (error) {
       console.error('Product save failed:', error);
@@ -284,42 +214,48 @@ const AddEditProduct = () => {
   };
 
   return (
-    <div className="add-edit-product">
-      <div className="admin-header-row">
-        <h2>{isEditMode ? 'Edit Product' : 'Add New Product'}</h2>
+    <div className="ns-product-form-wrapper">
+      
+      {/* Header */}
+      <div className="ns-product-form-header">
+        <div>
+          <h2 className="ns-product-form-title">{isEditMode ? 'Edit Product' : 'Add New Product'}</h2>
+          <p className="ns-product-form-subtitle">Fill in the details below to publish to your store.</p>
+        </div>
         <button 
           type="button"
-          className="btn-secondary" 
+          className="ns-product-form-btn-back" 
           onClick={() => navigate('/admin/products')}
           disabled={loading || uploadingImages}
         >
-          ← Back to Products
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back
         </button>
       </div>
 
-      {error && (
-        <Alert type="error" message={error} />
-      )}
-
+      {error && <div className="ns-product-form-alert"><Alert type="error" message={error} /></div>}
+      
       {success && (
-        <Alert 
-          type="success" 
-          message={`Product ${isEditMode ? 'updated' : 'created'} successfully! Redirecting...`}
-        />
+        <div className="ns-product-form-alert success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Product {isEditMode ? 'updated' : 'created'} successfully! Redirecting...
+        </div>
       )}
 
-      <form onSubmit={handleSubmit} className="product-form">
-        <div className="form-grid">
+      <form onSubmit={handleSubmit} className="ns-product-form">
+        <div className="ns-product-form-grid">
+          
           {/* Left Column - Image Upload */}
-          <div className="form-section">
-            <h3 className="form-section-title">
-              Product Images
-              {uploadingImages && (
-                <span className="uploading-indicator">
-                  Uploading... {uploadProgress}%
-                </span>
-              )}
-            </h3>
+          <div className="ns-product-form-card">
+            <div className="ns-product-form-card-header">
+              <h3>Media</h3>
+              {uploadingImages && <span className="upload-badge">Uploading... {uploadProgress}%</span>}
+            </div>
             
             <MultiImageUpload
               images={allImages}
@@ -330,177 +266,160 @@ const AddEditProduct = () => {
             />
             
             {formData.image?.original && (
-              <div className="image-info">
-                <p>
-                  <strong>✓ {allImages.length} image(s) uploaded to Cloudinary</strong>
-                </p>
-                <div className="upload-stats">
-                  <span>Main image: {formData.image.original.split('/').pop()}</span>
-                  <span>Additional: {formData.additionalImages.length} images</span>
-                </div>
+              <div className="ns-product-form-image-stats">
+                <p className="success-text">✓ {allImages.length} image(s) ready</p>
               </div>
             )}
           </div>
 
-          {/* Right Column - Product Details */}
-         <div className="form-section">
-            <h3 className="form-section-title">Product Details</h3>
+          {/* Right Column - Details */}
+          <div className="ns-product-form-card">
+            <div className="ns-product-form-card-header">
+              <h3>Product Information</h3>
+            </div>
             
-            <div className="form-group">
-              <label htmlFor="name">
-                Product Name *
-                {!formData.name.trim() && <span className="validation-error"> (Required)</span>}
-              </label>
+            {/* Title */}
+            <div className="ns-product-form-group">
+              <label>Product Name <span className="req">*</span></label>
               <input
                 type="text"
-                id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
+                placeholder="e.g., Premium Silk Comfort Nighty"
+                className="ns-product-form-input"
                 required
-                placeholder="e.g., Silk Comfort Nighty"
-                className={!formData.name.trim() ? 'input-error' : ''}
               />
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="price">
-                  Price ($) *
-                  {formData.price <= 0 && <span className="validation-error"> (Must be greater than 0)</span>}
-                </label>
+            {/* Price & Stock Row */}
+            <div className="ns-product-form-row">
+              <div className="ns-product-form-group">
+                <label>Price (₹) <span className="req">*</span></label>
                 <input
                   type="number"
-                  id="price"
                   name="price"
                   value={formData.price}
                   onChange={handleChange}
-                  required
                   min="0.01"
                   step="0.01"
-                  placeholder="29.99"
-                  className={formData.price <= 0 ? 'input-error' : ''}
+                  placeholder="0.00"
+                  className="ns-product-form-input"
+                  required
                 />
               </div>
-
-              <div className="form-group">
-                <label htmlFor="countInStock">Stock Quantity *</label>
+              <div className="ns-product-form-group">
+                <label>Stock Quantity <span className="req">*</span></label>
                 <input
                   type="number"
-                  id="countInStock"
                   name="countInStock"
                   value={formData.countInStock}
                   onChange={handleChange}
-                  required
                   min="0"
-                  placeholder="100"
+                  placeholder="e.g., 50"
+                  className="ns-product-form-input"
+                  required
                 />
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="brand">
-                  Brand *
-                  {!formData.brand.trim() && <span className="validation-error"> (Required)</span>}
-                </label>
+            {/* Brand & Category Row */}
+            <div className="ns-product-form-row">
+              <div className="ns-product-form-group">
+                <label>Brand <span className="req">*</span></label>
                 <input
                   type="text"
-                  id="brand"
                   name="brand"
                   value={formData.brand}
                   onChange={handleChange}
+                  placeholder="e.g., Nighty Sale Originals"
+                  className="ns-product-form-input"
                   required
-                  placeholder="e.g., Victoria's Secret"
-                  className={!formData.brand.trim() ? 'input-error' : ''}
                 />
               </div>
-
-              <div className="form-group">
-                <label htmlFor="category">Category *</label>
-                <select
-                  id="category"
+              
+              {/* CHANGED TO TEXT INPUT AS REQUESTED */}
+              <div className="ns-product-form-group">
+                <label>Category <span className="req">*</span></label>
+                <input
+                  type="text"
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
+                  placeholder="e.g., Cotton, Silk, Maternity..."
+                  className="ns-product-form-input"
                   required
-                >
-                  {categories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
+                />
               </div>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="sizes">
-                Available Sizes *
-                {formData.sizes.length === 0 && <span className="validation-error"> (Select at least one)</span>}
-              </label>
-              <select
-                id="sizes"
-                name="sizes"
-                value={formData.sizes}
-                onChange={handleChange}
-                multiple
-                required
-                className={`multi-select ${formData.sizes.length === 0 ? 'input-error' : ''}`}
-                size={Math.min(5, sizeOptions.length)}
-              >
-                {sizeOptions.map(size => (
-                  <option key={size} value={size}>Size {size}</option>
-                ))}
-              </select>
-              <small className="form-help">
-                Hold Ctrl/Cmd to select multiple. Selected: {formData.sizes.join(', ') || 'None'}
-              </small>
+            {/* CHANGED TO CHECKBOX PILLS AS REQUESTED */}
+            <div className="ns-product-form-group">
+              <label>Available Sizes <span className="req">*</span></label>
+              <div className="ns-product-form-sizes">
+                {sizeOptions.map(size => {
+                  const isChecked = formData.sizes.includes(size);
+                  return (
+                    <label key={size} className={`ns-size-pill ${isChecked ? 'active' : ''}`}>
+                      <input 
+                        type="checkbox" 
+                        checked={isChecked} 
+                        onChange={() => handleSizeToggle(size)} 
+                        hidden
+                      />
+                      {size}
+                    </label>
+                  );
+                })}
+              </div>
+              {formData.sizes.length === 0 && <small className="ns-error-text">Please select at least one size.</small>}
             </div>
 
-            <div className="form-group">
-              <label htmlFor="description">
-                Description *
-                {!formData.description.trim() && <span className="validation-error"> (Required)</span>}
-              </label>
+            {/* Description */}
+            <div className="ns-product-form-group">
+              <label>Description <span className="req">*</span></label>
               <textarea
-                id="description"
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
+                rows="5"
+                placeholder="Describe the material, comfort, features, and care instructions..."
+                className="ns-product-form-input"
                 required
-                rows="6"
-                placeholder="Describe the material, comfort, features, care instructions..."
-                className={!formData.description.trim() ? 'input-error' : ''}
               />
             </div>
+
           </div>
         </div>
 
-        <div className="form-actions">
+        {/* Bottom Sticky Action Bar */}
+        <div className="ns-product-form-actions">
           <button
             type="button"
-            className="btn-secondary"
+            className="ns-product-form-btn-cancel"
             onClick={() => navigate('/admin/products')}
             disabled={loading || uploadingImages}
           >
             Cancel
           </button>
+          
           <button
             type="submit"
-            className="btn-primary"
+            className="ns-product-form-btn-save"
             disabled={loading || uploadingImages}
           >
             {loading ? (
-              <span className="btn-loading">
-                <span className="spinner"></span>
-                {isEditMode ? 'Updating...' : 'Creating...'}
-              </span>
+              <>
+                <div className="ns-spinner-small"></div>
+                {isEditMode ? 'Saving Changes...' : 'Publishing...'}
+              </>
             ) : uploadingImages ? (
-              <span className="btn-loading">
-                <span className="spinner"></span>
-                Uploading Images...
-              </span>
+              <>
+                <div className="ns-spinner-small"></div>
+                Uploading Media...
+              </>
             ) : (
-              isEditMode ? 'Update Product' : 'Create Product'
+              isEditMode ? 'Update Product' : 'Publish Product'
             )}
           </button>
         </div>

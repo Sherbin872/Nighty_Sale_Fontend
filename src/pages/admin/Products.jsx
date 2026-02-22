@@ -1,4 +1,3 @@
-// src/pages/admin/Products.jsx - Updated
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -8,7 +7,7 @@ import SearchBar from '../../components/common/SearchBar';
 import Pagination from '../../components/common/Pagination';
 import Alert from '../../components/common/Alert/Alert';
 import Loader from '../../components/common/Loader';
-import './admin.css';
+import './admin.css'; // Renamed for namespace clarity
 
 const AdminProducts = () => {
   const navigate = useNavigate();
@@ -67,48 +66,61 @@ const AdminProducts = () => {
   };
 
   return (
-    <div className="admin-page">
-      <div className="admin-header-row">
-        <div>
-          <h2>Product Management</h2>
-          <p className="admin-subtitle">
-            {loading ? 'Loading...' : `Total Products: ${total} | Page ${page} of ${pages}`}
+    <div className="ns-products-wrapper">
+      
+      {/* Header Section */}
+      <div className="ns-products-header-row">
+        <div className="ns-products-header-text">
+          <h2 className="ns-products-title">Product Management</h2>
+          <p className="ns-products-subtitle">
+            {loading ? 'Loading inventory data...' : `Showing ${products.length} of ${total} products | Page ${page} of ${pages}`}
           </p>
         </div>
-        <div className="admin-actions">
-          <SearchBar 
-            onSearch={handleSearch} 
-            placeholder="Search by name, brand, category..."
-            disabled={loading}
-          />
+        
+        <div className="ns-products-actions">
+          <div className="ns-products-search-wrapper">
+            <SearchBar 
+              onSearch={handleSearch} 
+              placeholder="Search products..."
+              disabled={loading}
+            />
+          </div>
           <button 
-            className="btn-primary" 
+            className="ns-products-btn-primary" 
             onClick={handleAddProduct}
             disabled={loading}
           >
-            + Add Product
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Product
           </button>
         </div>
       </div>
 
       {error && (
-        <Alert type="error" message={error} />
+        <div className="ns-products-alert-wrapper">
+          <Alert type="error" message={error} />
+        </div>
       )}
 
+      {/* Main Content Area */}
       {loading && page === 1 ? (
-        <div className="loader-container">
+        <div className="ns-products-loader-container">
           <Loader />
-          <p>Loading products...</p>
+          <p>Loading your inventory...</p>
         </div>
       ) : (
-        <>
+        <div className="ns-products-content-card">
           {products.length === 0 ? (
-            <div className="empty-state">
+            <div className="ns-products-empty-state">
+              <div className="ns-products-empty-icon">📦</div>
               <h3>No products found</h3>
-              <p>{keyword ? 'Try a different search term.' : 'Start by adding your first product.'}</p>
+              <p>{keyword ? `We couldn't find anything matching "${keyword}".` : 'Your store is currently empty. Start by adding your first product.'}</p>
               {keyword && (
                 <button 
-                  className="btn-secondary" 
+                  className="ns-products-btn-secondary" 
                   onClick={() => {
                     setKeyword('');
                     dispatch(fetchProducts({ keyword: '', pageNumber: 1 }));
@@ -120,23 +132,29 @@ const AdminProducts = () => {
             </div>
           ) : (
             <>
-              <ProductTable
-                products={products}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-              
-              {pages > 1 && (
-                <Pagination
-                  currentPage={page}
-                  totalPages={pages}
-                  onPageChange={handlePageChange}
-                  disabled={loading}
+              {/* Product Table Wrapper */}
+              <div className="ns-products-table-wrapper">
+                <ProductTable
+                  products={products}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
                 />
+              </div>
+              
+              {/* Pagination Wrapper */}
+              {pages > 1 && (
+                <div className="ns-products-pagination-wrapper">
+                  <Pagination
+                    currentPage={page}
+                    totalPages={pages}
+                    onPageChange={handlePageChange}
+                    disabled={loading}
+                  />
+                </div>
               )}
             </>
           )}
-        </>
+        </div>
       )}
     </div>
   );
