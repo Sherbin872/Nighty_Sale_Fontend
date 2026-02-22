@@ -89,7 +89,7 @@ const ProductCard = ({ product }) => {
 
         {/* Product Info */}
         <div className="pproduct-info">
-          <span className="product-name" title={product.name}>
+          <span className="pcproduct-name" title={product.name}>
             {product.name}
           </span>
 

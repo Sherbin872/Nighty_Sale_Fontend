@@ -89,7 +89,7 @@ const OrderSuccess = () => {
         {/* Order Items */}
         {order.orderItems.map((item, index) => (
           <div key={index} className="product-item">
-            <div className="product-image">
+            <div className="pproduct-image">
               <img 
                 src={item.image} 
                 alt={item.name}
@@ -99,7 +99,7 @@ const OrderSuccess = () => {
               />
             </div>
             <div className="product-details">
-              <div className="product-name">{item.name}</div>
+              <div className="pproduct-name">{item.name}</div>
               <div className="product-meta text-muted">
                 Qty: {item.qty} | Size: {item.size}
               </div>

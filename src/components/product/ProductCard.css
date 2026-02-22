@@ -152,7 +152,7 @@
   text-align: center;
 }
 
-.product-name {
+.pcproduct-name {
   font-size: 0.9rem;
   color: white !important;
   /* margin: 0 0 8px; */
@@ -212,7 +212,7 @@
     font-size: 1rem;
   }
   
-  .product-name {
+  .pcproduct-name {
     font-size: 0.85rem;
   }
   
@@ -236,7 +236,7 @@
     font-size: 0.9rem;
   }
   
-  .product-name {
+  .pcproduct-name {
     font-size: 0.8rem;
     height: 2.2rem;
   }
@@ -254,7 +254,7 @@
   .current-price {
     margin-top: -13px !important;
   }
-  .product-name {
+  .pcproduct-name {
     margin-bottom: 0px !important;
   }
   .product-image-container {
