@@ -263,6 +263,7 @@
 
 /* Mobile Menu Overlay */
 .mobile-menu-overlay {
+  margin-top: 20px;
   position: fixed;
   top: 70px;
   left: 0;
