@@ -16,6 +16,7 @@ import ProductDetails from "./pages/ProductDetails/ProductDetails.jsx";
 import Cart from "./pages/Cart/Cart.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Register from "./pages/Register/Register.jsx";
+import SearchPage from "./pages/Search/SearchPage.jsx";
 
 // Protected Pages (Regular Users)
 import Checkout from "./pages/Checkout/Checkout.jsx";
@@ -56,6 +57,7 @@ const AppRoutes = () => {
         <Route path="/products" element={<Products />} />
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/search" element={<SearchPage />} />
 
         {/* Protected routes for logged-in users */}
         <Route element={<ProtectedRoute />}>

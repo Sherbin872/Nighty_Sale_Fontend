@@ -23,6 +23,14 @@ export const productApi = {
     return response.data;
   },
 
+  // NEW: Get search suggestions (Autocomplete)
+  getSearchSuggestions: async (keyword) => {
+    const response = await axiosInstance.get('/products/search/suggestions', {
+      params: { keyword }
+    });
+    return response.data;
+  },
+  
   // Create product (Admin only)
   createProduct: async (productData) => {
     const response = await axiosInstance.post('/products', productData);

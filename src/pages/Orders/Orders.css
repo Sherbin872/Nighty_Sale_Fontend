@@ -1,7 +1,6 @@
 /* Orders.css */
 
-:root {
-  --surface: #f8f9fa; /* Your footer background color */
+:root {/* Your footer background color */
   --primary: #1a1a1a;
   --primary-hover: #333;
   --success: #10b981;
