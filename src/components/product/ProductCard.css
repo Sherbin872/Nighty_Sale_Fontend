@@ -252,9 +252,10 @@
   height: 70px;
 }
   .current-price {
-    margin-top: -13px !important;
+    margin-top: -18px !important;
   }
   .pcproduct-name {
+    margin-top: -10px;
     margin-bottom: 0px !important;
   }
   .product-image-container {
