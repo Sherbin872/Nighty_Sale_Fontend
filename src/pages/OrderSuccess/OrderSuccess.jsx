@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import orderApi from '../../api/orderApi';
+import './OrderSuccess.css'; // Import the new CSS
 
 const OrderSuccess = () => {
   const { id } = useParams(); // completedOrderId
@@ -25,91 +26,122 @@ const OrderSuccess = () => {
     fetchOrder();
   }, [id]);
 
+  // Calculate estimated delivery date (7-9 days from now)
+  const getDeliveryDateRange = () => {
+    const today = new Date();
+    const startDate = new Date(today.setDate(today.getDate() + 7));
+    const endDate = new Date(today.setDate(today.getDate() + 2));
+    
+    return {
+      start: startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      end: endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    };
+  };
+
   if (loading) {
     return (
-      <div className="container py-5 text-center">
-        <h3>Loading order details...</h3>
+      <div className="loading-state">
+        <div className="loading-spinner"></div>
       </div>
     );
   }
 
   if (error || !order) {
     return (
-      <div className="container py-5 text-center">
-        <h3 className="text-danger">{error}</h3>
-        <button className="btn btn-primary mt-3" onClick={() => navigate('/')}>
-          Go to Home
-        </button>
+      <div className="error-state">
+        <div className="error-card">
+          <h3 className="text-danger">{error || 'Order not found'}</h3>
+          <button 
+            className="btn btn-primary mt-3" 
+            onClick={() => navigate('/')}
+          >
+            Go to Home
+          </button>
+        </div>
       </div>
     );
   }
 
+  const deliveryDate = getDeliveryDateRange();
+
   return (
-    <div className="container py-5">
-      <div className="card shadow-lg border-0">
-        <div className="card-body text-center">
-          <h2 className="text-success mb-3">Payment Successful</h2>
-          <p className="mb-1">Thank you for your purchase!</p>
-          <p className="text-muted">Order ID: <strong>{order._id}</strong></p>
+    <div className="order-success-container">
+      <div className="order-success-card">
+        <div className="success-header">
+          <div className="success-icon">✓</div>
+          <h1>Order Placed!</h1>
+          <p>Your elegant new pieces are being prepared for delivery.</p>
+        </div>
 
-          <hr />
+        {/* <div className="order-info-grid">
+          <div className="info-item">
+            <span className="info-label">ORDER NUMBER</span>
+            <span className="info-value">#{order._id?.slice(-8).toUpperCase()}</span>
+          </div>
+          <div className="info-item">
+            <span className="info-label">ARRIVAL DATE</span>
+            <span className="info-value highlight">
+              {deliveryDate.start} - {deliveryDate.end}
+            </span>
+          </div>
+        </div> */}
 
-          <h5 className="mb-3">Order Summary</h5>
-
-          {order.orderItems.map((item, index) => (
-            <div key={index} className="d-flex align-items-center mb-3">
-              <img
-                src={item.image}
+        {/* Order Items */}
+        {order.orderItems.map((item, index) => (
+          <div key={index} className="product-item">
+            <div className="product-image">
+              <img 
+                src={item.image} 
                 alt={item.name}
-                style={{ width: 60, height: 60, objectFit: 'cover' }}
-                className="rounded"
+                onError={(e) => {
+                  e.target.src = 'https://via.placeholder.com/70x70?text=Product';
+                }}
               />
-              <div className="ms-3 text-start">
-                <div><strong>{item.name}</strong></div>
-                <div className="text-muted">
-                  Qty: {item.qty} | Size: {item.size}
-                </div>
-                <div>₹ {item.price}</div>
-              </div>
             </div>
-          ))}
-
-          <hr />
-
-          <div className="text-start">
-            <p><strong>Shipping Address</strong></p>
-            <p className="mb-1">
-              {order.shippingAddress.address}, {order.shippingAddress.city}
-            </p>
-            <p className="mb-1">
-              {order.shippingAddress.country} - {order.shippingAddress.postalCode}
-            </p>
-            <p>Phone: {order.shippingAddress.phone}</p>
+            <div className="product-details">
+              <div className="product-name">{item.name}</div>
+              <div className="product-meta text-muted">
+                Qty: {item.qty} | Size: {item.size}
+              </div>
+              <div className="product-price">₹ {item.price}</div>
+            </div>
           </div>
+        ))}
 
-          <hr />
-
-          <div className="text-start">
-            <p><strong>Payment Status:</strong> {order.isPaid ? 'Paid' : 'Pending'}</p>
-            <p><strong>Order Status:</strong> {order.orderStatus}</p>
-            <p><strong>Total Paid:</strong> ₹ {order.totalPrice}</p>
+        {/* Order Summary */}
+        <div className="order-summary">
+          <div className="summary-row">
+            <span>Shipping</span>
+            <span className="summary-value">FREE</span>
           </div>
-
-          <div className="mt-4">
-            <button
-              className="btn btn-outline-primary me-2"
-              onClick={() => navigate('/')}
-            >
-              Continue Shopping
-            </button>
-
-            <button
-              className="btn btn-primary"
-              onClick={() => navigate('/my-orders')}
-            >
-              View My Orders
-            </button>
+          <div className="summary-row total">
+            <span>Total Paid</span>
+            <span className="summary-value">₹ {order.totalPrice}</span>
           </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="action-buttons">
+          <button 
+            className="btn btn-outline"
+            onClick={() => navigate('/')}
+          >
+            Back to Shop
+          </button>
+          <button 
+            className="btn btn-primary"
+            onClick={() => navigate('/orders')}
+          >
+            My Orders
+          </button>
+        </div>
+
+        {/* Need Assistance */}
+        <div className="assistance-section">
+          <div className="assistance-text">NEED ASSISTANCE WITH YOUR ORDER</div>
+          <a href="/support" className="assistance-link">
+            Contact Support
+          </a>
         </div>
       </div>
     </div>

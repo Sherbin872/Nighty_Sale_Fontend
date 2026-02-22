@@ -84,16 +84,6 @@ const Checkout = () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
   
   // Load user data if logged in
   useEffect(() => {
@@ -537,10 +527,10 @@ const Checkout = () => {
                   </span>
                 </div>
                 
-                <div className="total-row">
+                {/* <div className="total-row">
                   <span className="total-label">Tax (18% GST)</span>
                   <span className="total-value">₹{orderTotals.taxPrice.toFixed(2)}</span>
-                </div>
+                </div> */}
                 
                 {orderTotals.itemsPrice < 1000 && orderTotals.shippingPrice > 0 && (
                   <div className="free-shipping-notice">

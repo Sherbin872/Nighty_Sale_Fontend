@@ -1,0 +1,469 @@
+/* Orders.css */
+
+:root {
+  --surface: #f8f9fa; /* Your footer background color */
+  --primary: #1a1a1a;
+  --primary-hover: #333;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666;
+  --text-muted: #888;
+  --border-light: #f0f0f0;
+  --card-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.1);
+}
+
+.orders-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fdfbfb 0%, #f7f7f7 100%);
+  padding: 2rem 1.5rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.orders-header {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.orders-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+/* Stats Cards with --surface background */
+.orders-stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  background-color: var(--surface);
+  padding: 0.75rem 1.5rem;
+  border-radius: 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border-light);
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.stat-value {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Orders Grid */
+.orders-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Order Card - Main container */
+.order-card {
+  background: white;
+  border-radius: 24px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.order-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 50px -20px rgba(0, 0, 0, 0.15);
+  border-color: var(--border-light);
+}
+
+/* Order Card Header with --surface */
+.order-card-header {
+  background-color: var(--surface);
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-id {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: monospace;
+}
+
+.order-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Order Status Badges */
+.order-status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 40px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.status-paid {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+}
+
+.status-pending {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+}
+
+.status-processing {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning);
+}
+
+.status-delivered {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+}
+
+.status-shipped {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+/* Order Card Body */
+.order-card-body {
+  padding: 1.25rem;
+}
+
+/* Order Items Preview */
+.order-items-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.preview-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.preview-item-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  background: var(--surface);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.preview-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.preview-item-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.preview-item-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview-item-meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.preview-item-price {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.more-items-badge {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: fit-content;
+  margin-top: 0.5rem;
+}
+
+/* Order Summary with --surface card */
+.order-summary-mini {
+  background-color: var(--surface);
+  border-radius: 16px;
+  padding: 1rem;
+  margin: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.summary-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.summary-value {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.summary-value.highlight {
+  color: var(--success);
+}
+
+/* Order Card Footer */
+.order-card-footer {
+  padding: 1.25rem;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.625rem 1rem;
+  border-radius: 40px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+}
+
+.btn-outline:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+/* Empty State */
+.empty-state {
+  max-width: 1200px;
+  margin: 3rem auto;
+  text-align: center;
+  background: white;
+  border-radius: 32px;
+  padding: 4rem 2rem;
+  box-shadow: var(--card-shadow);
+}
+
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  background: var(--surface);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2.5rem;
+  color: var(--text-muted);
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Loading State */
+.loading-state {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fdfbfb 0%, #f7f7f7 100%);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--surface);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error State */
+.error-state {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fdfbfb 0%, #f7f7f7 100%);
+}
+
+.error-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 24px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: var(--card-shadow);
+}
+
+.error-card h3 {
+  color: var(--danger);
+  margin-bottom: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .orders-page {
+    padding: 1rem;
+  }
+
+  .orders-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .orders-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .orders-stats {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .stat-card {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .orders-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-card-footer {
+    flex-direction: column;
+  }
+
+  .order-summary-mini {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .stat-card {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Subtle pattern overlay (optional) */
+.orders-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle at 1px 1px, #e5e5e5 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.orders-header,
+.orders-grid,
+.empty-state {
+  position: relative;
+  z-index: 1;
+}

@@ -83,7 +83,7 @@ const Cart = () => {
     );
     
     // Free shipping over $50, else $5.99
-    const shipping = subtotal > 50 ? 0 : 5.99;
+    const shipping = subtotal > 50 ? 0 : 0;
     
     // Calculate tax (2% of subtotal based on your example)
     const tax = 0;

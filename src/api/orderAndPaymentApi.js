@@ -68,8 +68,10 @@ export const orderUtils = {
       return acc + price * qty;
     }, 0);
 
-    const taxPrice = Math.round(itemsPrice * 0.18);
-    const shippingPrice = itemsPrice > 1000 ? 0 : 50;
+    const taxPrice = 0;
+    const shippingPrice = 0;
+    // const taxPrice = Math.round(itemsPrice * 0.18);
+    // const shippingPrice = itemsPrice > 1000 ? 0 : 50;
     const totalPrice = itemsPrice + taxPrice + shippingPrice;
 
     return {
