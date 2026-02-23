@@ -1,6 +1,6 @@
 import axiosInstance from './axiosConfig';
 
-const getOrderById = async (id) => {
+export const getOrderById = async (id) => {
   const { data } = await axiosInstance.get(`/orders/${id}`);
   return data;
 };
@@ -9,6 +9,8 @@ export const getMyOrders = async () => {
   const { data } = await axiosInstance.get('/orders/myorders');
   return data;
 };
+// Add this to orderApi.js
+
 
 export const getAllOrders = async () => {
   const { data } = await axiosInstance.get('/orders');

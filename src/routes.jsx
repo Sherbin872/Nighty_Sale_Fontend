@@ -29,6 +29,7 @@ import AdminProducts from "./pages/admin/Products.jsx";
 import AdminOrders from "./pages/admin/Orders.jsx";
 import AdminUsers from "./pages/admin/Users.jsx";
 import AddEditProduct from "./pages/admin/AddEditProduct.jsx";
+import AdminOrderDetail from "./pages/admin/AdminOrderDetail.jsx";
 
 const AppRoutes = () => {
   return (
@@ -48,6 +49,7 @@ const AppRoutes = () => {
           <Route path="/admin/products/edit/:id" element={<AddEditProduct />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/orders/:id" element={<AdminOrderDetail />} />
         </Route>
       </Route>
 

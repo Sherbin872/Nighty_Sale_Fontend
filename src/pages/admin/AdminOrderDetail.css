@@ -1,0 +1,302 @@
+/* Main Layout */
+.ns-order-detail-wrapper {
+  padding: 32px;
+  background-color: #FAFAFB;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #111827;
+}
+
+.ns-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+}
+
+/* Header */
+.ns-order-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.ns-btn-back-link {
+  background: none;
+  border: none;
+  color: #6B7280;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+.ns-btn-back-link:hover {
+  color: #111827;
+  text-decoration: underline;
+}
+
+.ns-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+}
+
+.ns-subtitle {
+  font-size: 14px;
+  color: #6B7280;
+  margin: 0;
+}
+
+.ns-header-badges {
+  display: flex;
+  gap: 12px;
+}
+
+/* Grid Layout */
+.ns-order-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr; /* Left side smaller, Right side larger */
+  gap: 24px;
+}
+
+/* Cards */
+.ns-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.ns-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+/* Info Rows (Customer) */
+.ns-info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.ns-info-label {
+  color: #6B7280;
+}
+
+.ns-info-value {
+  font-weight: 500;
+  color: #111827;
+  text-align: right;
+}
+
+.ns-highlight {
+  color: #2563EB; /* Blue color to make mobile number pop out */
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* Address Box */
+.ns-address-box p {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+/* Order Items */
+.ns-order-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ns-order-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.ns-order-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.ns-item-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #F3F4F6;
+  flex-shrink: 0;
+}
+
+.ns-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ns-no-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+.ns-item-details {
+  flex: 1;
+}
+
+.ns-item-details h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.ns-item-details p {
+  margin: 0;
+  font-size: 13px;
+  color: #6B7280;
+}
+
+.ns-item-price-calc {
+  font-size: 14px;
+  color: #6B7280;
+}
+
+.ns-item-total {
+  font-weight: 600;
+  font-size: 14px;
+  color: #111827;
+  min-width: 80px;
+  text-align: right;
+}
+
+/* Summary Box */
+.ns-summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+  color: #4B5563;
+}
+
+.ns-divider {
+  border: 0;
+  border-top: 1px dashed #E5E7EB;
+  margin: 12px 0;
+}
+
+.ns-total-row {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Action / Update Status Box */
+.ns-action-card {
+  background-color: #F8FAFC; /* Slight blue tint */
+  border-color: #E2E8F0;
+}
+
+.ns-status-update-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ns-status-select {
+  padding: 10px 14px;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  background-color: #FFFFFF;
+}
+
+.ns-btn-update {
+  background-color: #111827;
+  color: #FFFFFF;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.ns-btn-update:hover:not(:disabled) {
+  background-color: #374151;
+}
+
+.ns-btn-update:disabled {
+  background-color: #9CA3AF;
+  cursor: not-allowed;
+}
+
+/* Badges */
+.ns-badge {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.badge-success, .badge-delivered { background-color: #D1FAE5; color: #065F46; }
+.badge-error, .badge-cancelled { background-color: #FEE2E2; color: #991B1B; }
+.badge-processing { background-color: #FEF3C7; color: #92400E; }
+.badge-shipped { background-color: #DBEAFE; color: #1E40AF; }
+.badge-out-for-delivery { background-color: #E0E7FF; color: #3730A3; }
+
+/* Utilities */
+.ns-spinner {
+  width: 40px; height: 40px;
+  border: 3px solid #E5E7EB;
+  border-top-color: #3B82F6;
+  border-radius: 50%;
+  animation: ns-spin 1s linear infinite;
+}
+
+.ns-error-box {
+  background-color: #FEF2F2; color: #DC2626;
+  padding: 16px 24px; border-radius: 8px;
+  border: 1px solid #F87171; margin-bottom: 20px;
+}
+
+@keyframes ns-spin { to { transform: rotate(360deg); } }
+
+/* Mobile Responsiveness */
+@media (max-width: 900px) {
+  .ns-order-grid {
+    grid-template-columns: 1fr; /* Stack columns on tablets and mobile */
+  }
+  
+  .ns-order-left {
+    order: 2; /* Move status and shipping to bottom on mobile */
+  }
+  
+  .ns-order-right {
+    order: 1; /* Show items and total price first on mobile */
+  }
+}
