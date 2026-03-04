@@ -65,7 +65,7 @@ const AdminLayout = () => {
 
       {/* Overlay for mobile */}
       <div 
-        className={`admin-layout__overlay ${isSidebarOpen ? 'admin-layout__overlay--visible' : ''}`}
+        className={` ${isSidebarOpen ? 'admin-layout__overlay--visible' : ''}`}
         onClick={() => setIsSidebarOpen(false)}
       />
 

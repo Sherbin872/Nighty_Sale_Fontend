@@ -1,5 +1,5 @@
 // src/pages/Home/Home.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { productApi } from '../../api/productApi';
 import Listings from '../../components/product/Listings';
 import './Home.css';
@@ -13,6 +13,7 @@ const Home = () => {
   const [hasMore, setHasMore] = useState(true);
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState('all');
+  const collectionsRef = useRef(null);
 
   const fetchProducts = async (pageNum = 1, category = '') => {
   try {
@@ -40,6 +41,13 @@ const Home = () => {
   } finally {
     setLoading(false);
   }
+};
+
+const scrollToCollections = () => {
+  collectionsRef.current?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  });
 };
 
 
@@ -93,7 +101,7 @@ useEffect(() => {
                 Rediscover relaxation with our premium sage-inspired lounge collection.
               </p>  
               <div className="hero-buttons">
-                <button className="btn-primary">Shop Now</button>
+                <button className="btn-primary" onClick={scrollToCollections}>Shop Now</button>
                 <button className="btn-secondary">Our Story</button>
               </div>
             </div>
@@ -123,7 +131,7 @@ useEffect(() => {
       </div> */}
 
       {/* Editor's Choice */}
-      <div className="editors-choice-section">
+      <div className="editors-choice-section" ref={collectionsRef}>
         <div className="section-header">
           <span className="section-title">Our Collections</span>
           {/* <a href="#" className="section-link">Explore All ↗</a> */}

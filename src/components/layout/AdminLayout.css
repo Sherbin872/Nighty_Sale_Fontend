@@ -136,6 +136,14 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .admin-layout{
+    width: 100% !important;
+    overflow: hidden;
+  }
+  .admin-layout__main{
+    width: 70% !important;
+overflow: hidden;
+  }
   .admin-sidebar {
     width: 70px;
   }
@@ -159,5 +167,15 @@
   
   .nav-icon {
     font-size: 1.5rem;
+  }
+}
+@media (max-width: 640px) {
+  .admin-layout{
+    width: 100% !important;
+    overflow: hidden;
+  }
+  .admin-layout__main{
+    width: 70% !important;
+overflow: hidden;
   }
 }

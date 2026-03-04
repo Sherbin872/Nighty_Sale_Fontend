@@ -5,12 +5,13 @@
   --primary-accent: #A3D48F;
   --primary-muted: #C2E2B5;
   --background-main: #A3D48F;
+  /* --background-main: #fcfbf5; */
   --cream: #ffffff;
   /* --cream: #FFFDD0; */
   --surface: #FFFDD0;
   --text-main: #2D412F;
   --text-light: #556B58;
-  --white: #FFFFFF;
+  --white: #ee2b6c;
   --shadow: rgba(0, 0, 0, 0.1);
 }
 
