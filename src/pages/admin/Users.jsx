@@ -173,7 +173,7 @@ const AdminUsers = () => {
                       
                       <td>
                         <div className="ns-users-action-buttons">
-                          <button 
+                          {/* <button 
                             className="ns-users-btn-icon btn-edit"
                             onClick={() => handleRoleToggle(user._id, user.role)}
                             title="Toggle Admin/Customer Role"
@@ -183,7 +183,7 @@ const AdminUsers = () => {
                               <circle cx="8.5" cy="7" r="4"></circle>
                               <polyline points="17 11 19 13 23 9"></polyline>
                             </svg>
-                          </button>
+                          </button> */}
                           <button 
                             className="ns-users-btn-icon btn-delete"
                             onClick={() => handleDeleteUser(user._id, user.name)}

@@ -152,13 +152,13 @@ const ProductTable = ({ products = [], onEdit, onDelete }) => {
                   {/* Actions */}
                   <td>
                     <div className="action-buttons">
-                      <button
+                      {/* <button
                         className="btn-action edit"
                         onClick={() => handleEdit(_id)}
                         title="Edit"
                       >
                         ✏️
-                      </button>
+                      </button> */}
 
                       <button
                         className="btn-action delete"

@@ -158,7 +158,10 @@ overflow: hidden;
   .admin-main {
     margin-left: 70px;
   }
-  
+  .admin-layout__mobile-toggle{
+    position: absolute !important;
+    right: 16px !important;
+  }
   .admin-nav-link,
   .logout-btn {
     justify-content: center;
@@ -170,6 +173,10 @@ overflow: hidden;
   }
 }
 @media (max-width: 640px) {
+  .admin-layout__mobile-toggle{
+    position: absolute !important;
+    left: 85% !important;
+  }
   .admin-layout{
     width: 100% !important;
     overflow: hidden;
