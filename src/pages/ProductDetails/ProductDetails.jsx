@@ -31,7 +31,7 @@ const ProductDetails = () => {
   const [splideInstance, setSplideInstance] = useState(null);
   const [addingToCart, setAddingToCart] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-
+const [showFullDescription, setShowFullDescription] = useState(false);
   // Get cart items for stock validation
   const cartItems = useSelector((state) => state.cart.items);
 
@@ -394,14 +394,28 @@ const ProductDetails = () => {
             </div>
 
             {/* Description */}
-            <div className="product-description">
-              <h3>Description</h3>
-              <div className="description-content">
-                {product.description.split("\n").map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
-                ))}
-              </div>
-            </div>
+           <div className="product-description">
+  <h3>Description</h3>
+
+  <div
+    className={`description-content ${
+      showFullDescription ? "expanded" : "collapsed"
+    }`}
+  >
+    {product.description.split("\n").map((paragraph, index) => (
+      <p key={index}>{paragraph}</p>
+    ))}
+  </div>
+
+  {product.description.length > 200 && (
+    <button
+      className="see-more-btn"
+      onClick={() => setShowFullDescription(!showFullDescription)}
+    >
+      {showFullDescription ? "See Less" : "See More"}
+    </button>
+  )}
+</div>
 
             {/* Key Features */}
             {/* <div className="product-features">

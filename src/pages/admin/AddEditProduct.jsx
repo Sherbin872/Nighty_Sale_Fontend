@@ -10,7 +10,7 @@ import {
 import Alert from '../../components/common/Alert/Alert';
 import Loader from '../../components/common/Loader';
 import MultiImageUpload from '../../components/admin/MultiImageUpload';
-import './AddEditProduct.css'; // New dedicated CSS
+import './AddEditProduct.css';
 
 const AddEditProduct = () => {
   const { id } = useParams();
@@ -27,9 +27,9 @@ const AddEditProduct = () => {
     price: 0,
     description: '',
     brand: '',
-    category: '', // Now starts empty for typing
+    category: '',
     countInStock: 0,
-    sizes: [], // Starts empty
+    sizes: [],
     image: {
       public_id: '',
       original: '',
@@ -48,6 +48,9 @@ const AddEditProduct = () => {
   // Available size options for the checkboxes
   const sizeOptions = ['S', 'M', 'L', 'XL', 'XXL', '3XL', 'Free Size'];
 
+  // Get all images for display
+  const allImages = [formData.image, ...formData.additionalImages].filter(img => img && img.original);
+
   // Initialize form data if editing
   useEffect(() => {
     if (isEditMode && product && product._id === id) {
@@ -64,6 +67,34 @@ const AddEditProduct = () => {
         },
         additionalImages: product.additionalImages || []
       });
+
+      // Create preview entries for existing images
+      const existingImages = [];
+      if (product.image?.original) {
+        existingImages.push({
+          preview: product.image.original,
+          uploaded: true,
+          uploading: false,
+          isMain: true,
+          cloudinaryData: product.image
+        });
+      }
+      
+      if (product.additionalImages?.length > 0) {
+        product.additionalImages.forEach((img, index) => {
+          existingImages.push({
+            preview: img.original,
+            uploaded: true,
+            uploading: false,
+            isMain: false,
+            cloudinaryData: img
+          });
+        });
+      }
+      
+      if (existingImages.length > 0) {
+        setImageFiles(existingImages);
+      }
     }
   }, [isEditMode, product, id]);
 
@@ -83,23 +114,37 @@ const AddEditProduct = () => {
     return () => {
       dispatch(clearProductState());
       imageFiles.forEach(file => {
-        if (file.preview) URL.revokeObjectURL(file.preview);
+        if (file.preview && file.preview.startsWith('blob:')) {
+          URL.revokeObjectURL(file.preview);
+        }
       });
     };
   }, [dispatch, imageFiles]);
 
-  // Image Handlers (Kept exactly as you wrote them)
+  // Image Handlers
   const handleImagesSelect = useCallback(async (files) => {
+    // Create previews for new files
     const filesWithPreview = files.map(file => ({
-      file, preview: URL.createObjectURL(file), uploading: false, uploaded: false
+      file, 
+      preview: URL.createObjectURL(file), 
+      uploading: false, 
+      uploaded: false,
+      isMain: false
     }));
+    
     setImageFiles(prev => [...prev, ...filesWithPreview]);
-    await uploadImagesToCloudinary(filesWithPreview);
-  }, []);
+    
+    // Check if this is the first image being added
+    const currentImagesCount = allImages.length;
+    const isFirstImage = currentImagesCount === 0;
+    
+    await uploadImagesToCloudinary(filesWithPreview, isFirstImage);
+  }, [allImages.length]);
 
-  const uploadImagesToCloudinary = async (filesToUpload) => {
+  const uploadImagesToCloudinary = async (filesToUpload, isFirstImage = false) => {
     setUploadingImages(true);
     setUploadProgress(0);
+    
     try {
       const uploadData = new FormData();
       filesToUpload.forEach(item => uploadData.append('images', item.file));
@@ -108,21 +153,55 @@ const AddEditProduct = () => {
       
       if (result.images && result.images.length > 0) {
         const uploadedImages = result.images;
-        const mainImage = uploadedImages[0];
-        const additionalImages = uploadedImages.slice(1);
         
-        setFormData(prev => ({
-          ...prev,
-          image: mainImage,
-          additionalImages: [...prev.additionalImages, ...additionalImages]
-        }));
+        setFormData(prev => {
+          const newFormData = { ...prev };
+          
+          // Handle main image assignment
+          if (isFirstImage || !prev.image.original) {
+            // If this is the first image, set as main
+            newFormData.image = uploadedImages[0];
+            newFormData.additionalImages = [
+              ...prev.additionalImages,
+              ...uploadedImages.slice(1)
+            ];
+          } else {
+            // Otherwise add all as additional images
+            newFormData.additionalImages = [
+              ...prev.additionalImages,
+              ...uploadedImages
+            ];
+          }
+          
+          return newFormData;
+        });
         
-        setImageFiles(prev => prev.map((item, index) => ({
-            ...item, uploading: false, uploaded: true, cloudinaryData: uploadedImages[index] || null
-        })));
+        // Update imageFiles state with cloudinary data
+        setImageFiles(prev => {
+          const updated = [...prev];
+          let uploadedIndex = 0;
+          
+          // Find the files that were just uploaded (those without cloudinaryData)
+          for (let i = 0; i < updated.length; i++) {
+            if (!updated[i].cloudinaryData && uploadedIndex < uploadedImages.length) {
+              updated[i] = {
+                ...updated[i],
+                uploading: false,
+                uploaded: true,
+                cloudinaryData: uploadedImages[uploadedIndex],
+                isMain: isFirstImage && uploadedIndex === 0
+              };
+              uploadedIndex++;
+            }
+          }
+          
+          return updated;
+        });
+        
+        setUploadProgress(100);
       }
-      setUploadProgress(100);
     } catch (error) {
+      console.error('Upload failed:', error);
       alert(`Failed to upload images: ${error.message || 'Unknown error'}`);
       setImageFiles(prev => prev.map(item => ({...item, uploading: false, uploaded: false})));
     } finally {
@@ -130,27 +209,120 @@ const AddEditProduct = () => {
     }
   };
 
-  const handleImageRemove = useCallback((index) => {
-    if (index === 0) {
-      const newMainImage = formData.additionalImages[0] || null;
-      const newAdditionalImages = formData.additionalImages.slice(1);
-      setFormData(prev => ({
-        ...prev,
-        image: newMainImage || { public_id: '', original: '', thumbnail: '', medium: '', large: '', placeholder: '' },
-        additionalImages: newAdditionalImages
-      }));
-    } else {
-      const adjustedIndex = index - 1;
-      setFormData(prev => ({
-        ...prev,
-        additionalImages: prev.additionalImages.filter((_, i) => i !== adjustedIndex)
-      }));
+  // Handle image removal
+  const handleImageRemove = useCallback((indexToRemove) => {
+    const allCurrentImages = [formData.image, ...formData.additionalImages].filter(img => img?.original);
+    
+    if (indexToRemove < 0 || indexToRemove >= allCurrentImages.length) return;
+    
+    const imageToRemove = allCurrentImages[indexToRemove];
+    
+    // Revoke object URL if it's a blob URL
+    if (imageFiles[indexToRemove]?.preview && imageFiles[indexToRemove].preview.startsWith('blob:')) {
+      URL.revokeObjectURL(imageFiles[indexToRemove].preview);
     }
-    if (imageFiles[index]?.preview) URL.revokeObjectURL(imageFiles[index].preview);
-    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    
+    // Remove from imageFiles
+    setImageFiles(prev => prev.filter((_, i) => i !== indexToRemove));
+    
+    // Update formData
+    setFormData(prev => {
+      // Check if removing the main image
+      if (imageToRemove === prev.image) {
+        // Main image is being removed, promote the first additional image to main
+        const newMainImage = prev.additionalImages[0] || null;
+        const newAdditionalImages = prev.additionalImages.slice(1);
+        
+        // Update isMain flag in imageFiles for the new main image
+        if (newMainImage) {
+          setImageFiles(current => 
+            current.map((file, idx) => ({
+              ...file,
+              isMain: idx === 0 // The first remaining image becomes main
+            }))
+          );
+        }
+        
+        return {
+          ...prev,
+          image: newMainImage || { 
+            public_id: '', original: '', thumbnail: '', medium: '', large: '', placeholder: '' 
+          },
+          additionalImages: newAdditionalImages
+        };
+      } else {
+        // Removing an additional image
+        return {
+          ...prev,
+          additionalImages: prev.additionalImages.filter(img => img !== imageToRemove)
+        };
+      }
+    });
   }, [formData, imageFiles]);
 
-  const allImages = [formData.image, ...formData.additionalImages].filter(img => img && img.original);
+  // Handle setting an image as main
+  const handleSetAsMain = useCallback((index) => {
+    const allCurrentImages = [formData.image, ...formData.additionalImages].filter(img => img?.original);
+    
+    if (index < 0 || index >= allCurrentImages.length) return;
+    if (index === 0) return; // Already main image
+    
+    const newMainImage = allCurrentImages[index];
+    const remainingImages = allCurrentImages.filter((_, i) => i !== index);
+    
+    setFormData({
+      ...formData,
+      image: newMainImage,
+      additionalImages: remainingImages
+    });
+    
+    // Update imageFiles to reflect main image status
+    setImageFiles(prev => {
+      // Reorder the files array to put the new main image first
+      const newFileOrder = [...prev];
+      const [movedFile] = newFileOrder.splice(index, 1);
+      newFileOrder.unshift(movedFile);
+      
+      // Update isMain flags
+      return newFileOrder.map((file, i) => ({
+        ...file,
+        isMain: i === 0
+      }));
+    });
+  }, [formData]);
+
+  // NEW: Handle image reordering
+  const handleImageReorder = useCallback((dragIndex, dropIndex) => {
+    if (dragIndex === dropIndex) return;
+
+    // Get all current images
+    const allCurrentImages = [formData.image, ...formData.additionalImages].filter(img => img?.original);
+    
+    // Create a new array with the reordered items
+    const reorderedImages = [...allCurrentImages];
+    const [draggedImage] = reorderedImages.splice(dragIndex, 1);
+    reorderedImages.splice(dropIndex, 0, draggedImage);
+    
+    // Update formData with new order
+    setFormData({
+      ...formData,
+      image: reorderedImages[0] || formData.image,
+      additionalImages: reorderedImages.slice(1)
+    });
+    
+    // Also update imageFiles to maintain consistency
+    setImageFiles(prev => {
+      const newFileOrder = [...prev];
+      const [draggedFile] = newFileOrder.splice(dragIndex, 1);
+      newFileOrder.splice(dropIndex, 0, draggedFile);
+      
+      // Update isMain flags
+      return newFileOrder.map((file, idx) => ({
+        ...file,
+        isMain: idx === 0
+      }));
+    });
+  }, [formData]);
 
   // Input Handlers
   const handleChange = (e) => {
@@ -254,22 +426,50 @@ const AddEditProduct = () => {
           <div className="ns-product-form-card">
             <div className="ns-product-form-card-header">
               <h3>Media</h3>
-              {uploadingImages && <span className="upload-badge">Uploading... {uploadProgress}%</span>}
+              {uploadingImages && (
+                <div className="upload-progress">
+                  <span className="upload-badge">Uploading... {uploadProgress}%</span>
+                  <div className="progress-bar">
+                    <div 
+                      className="progress-bar-fill" 
+                      style={{ width: `${uploadProgress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
             </div>
             
-            <MultiImageUpload
-              images={allImages}
-              onImagesSelect={handleImagesSelect}
-              onImageRemove={handleImageRemove}
-              maxImages={10}
-              uploading={uploadingImages}
-            />
-            
-            {formData.image?.original && (
-              <div className="ns-product-form-image-stats">
-                <p className="success-text">✓ {allImages.length} image(s) ready</p>
-              </div>
-            )}
+            {/* Custom Image Upload Display with Main Image Indicator */}
+            <div className="custom-image-upload-container">
+              {/* Main Image Indicator */}
+              {allImages.length > 0 && (
+                <div className="main-image-badge">
+                  <span className="badge">Main Image</span>
+                </div>
+              )}
+              
+              <MultiImageUpload
+                images={allImages}
+                onImagesSelect={handleImagesSelect}
+                onImageRemove={handleImageRemove}
+                onSetAsMain={handleSetAsMain}
+                onImageReorder={handleImageReorder}  // This is now defined
+                maxImages={10}
+                uploading={uploadingImages}
+                showMainIndicator={true}
+              />
+              
+              {formData.image?.original && (
+                <div className="ns-product-form-image-stats">
+                  <p className="success-text">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    {allImages.length} image(s) ready • First image is main
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Right Column - Details */}
@@ -338,7 +538,6 @@ const AddEditProduct = () => {
                 />
               </div>
               
-              {/* CHANGED TO TEXT INPUT AS REQUESTED */}
               <div className="ns-product-form-group">
                 <label>Category <span className="req">*</span></label>
                 <input
@@ -353,7 +552,7 @@ const AddEditProduct = () => {
               </div>
             </div>
 
-            {/* CHANGED TO CHECKBOX PILLS AS REQUESTED */}
+            {/* Size Checkboxes */}
             <div className="ns-product-form-group">
               <label>Available Sizes <span className="req">*</span></label>
               <div className="ns-product-form-sizes">
@@ -372,7 +571,9 @@ const AddEditProduct = () => {
                   );
                 })}
               </div>
-              {formData.sizes.length === 0 && <small className="ns-error-text">Please select at least one size.</small>}
+              {formData.sizes.length === 0 && (
+                <small className="ns-error-text">Please select at least one size.</small>
+              )}
             </div>
 
             {/* Description */}
@@ -406,7 +607,7 @@ const AddEditProduct = () => {
           <button
             type="submit"
             className="ns-product-form-btn-save"
-            disabled={loading || uploadingImages}
+            disabled={loading || uploadingImages || !formData.image.original}
           >
             {loading ? (
               <>
