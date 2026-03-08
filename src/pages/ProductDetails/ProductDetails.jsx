@@ -14,6 +14,8 @@ import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 import "@splidejs/react-splide/css/core";
 import "./ProductDetails.css";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -31,7 +33,7 @@ const ProductDetails = () => {
   const [splideInstance, setSplideInstance] = useState(null);
   const [addingToCart, setAddingToCart] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-const [showFullDescription, setShowFullDescription] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(false);
   // Get cart items for stock validation
   const cartItems = useSelector((state) => state.cart.items);
 
@@ -291,14 +293,13 @@ const [showFullDescription, setShowFullDescription] = useState(false);
                 {images.map((image, index) => (
                   <SplideSlide key={image.public_id}>
                     <div className="image-slide">
-                      <LazyLoadImage
-                        src={image.original}
-                        alt={`${product.name} - View ${index + 1}`}
-                        effect="blur"
-                        placeholderSrc={image.placeholder}
-                        className="main-image"
-                        threshold={100}
-                      />
+                      <Zoom>
+  <img
+    src={image.original}
+    alt={`${product.name} - View ${index + 1}`}
+    className="main-image"
+  />
+</Zoom>
                     </div>
                   </SplideSlide>
                 ))}
@@ -394,28 +395,28 @@ const [showFullDescription, setShowFullDescription] = useState(false);
             </div>
 
             {/* Description */}
-           <div className="product-description">
-  <h3>Description</h3>
+            <div className="product-description">
+              <h3>Description</h3>
 
-  <div
-    className={`description-content ${
-      showFullDescription ? "expanded" : "collapsed"
-    }`}
-  >
-    {product.description.split("\n").map((paragraph, index) => (
-      <p key={index}>{paragraph}</p>
-    ))}
-  </div>
+              <div
+                className={`description-content ${
+                  showFullDescription ? "expanded" : "collapsed"
+                }`}
+              >
+                {product.description.split("\n").map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+              </div>
 
-  {product.description.length > 200 && (
-    <button
-      className="see-more-btn"
-      onClick={() => setShowFullDescription(!showFullDescription)}
-    >
-      {showFullDescription ? "See Less" : "See More"}
-    </button>
-  )}
-</div>
+              {product.description.length > 200 && (
+                <button
+                  className="see-more-btn"
+                  onClick={() => setShowFullDescription(!showFullDescription)}
+                >
+                  {showFullDescription ? "See Less" : "See More"}
+                </button>
+              )}
+            </div>
 
             {/* Key Features */}
             {/* <div className="product-features">
@@ -467,7 +468,9 @@ const [showFullDescription, setShowFullDescription] = useState(false);
                   <span className="stock-info">
                     {availableStock > 10
                       ? "In Stock"
-                      : `Only ${availableStock} left!`}
+                      : availableStock > 3
+                        ? `Only ${availableStock} left`
+                        : `🔥 Hurry! Only ${availableStock} left`}
                   </span>
                 </div>
               )}
