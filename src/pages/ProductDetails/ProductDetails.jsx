@@ -72,11 +72,13 @@ const ProductDetails = () => {
   }, [id]);
 
   // Reset selection when product changes
+ // Reset selection when product changes
   useEffect(() => {
     if (product) {
-      // Set default size if available
       if (product.sizes && product.sizes.length > 0) {
-        setSelectedSize(product.sizes[0]);
+        // Smart select: Find the first size that is actually in stock
+        const inStockSize = product.sizes.find(s => s.stock > 0);
+        setSelectedSize(inStockSize ? inStockSize.size : product.sizes[0].size);
       }
       setQuantity(1);
       setSelectedImageIndex(0);
@@ -98,14 +100,14 @@ const ProductDetails = () => {
     );
   };
 
-  // Get available stock for selected size
+ // Get available stock for selected size
   const getAvailableStock = useCallback(() => {
-    if (!product) return 0;
-
-    // In a real app, you might have per-size inventory
-    // For now, using overall stock
-    return product.countInStock;
-  }, [product]);
+    if (!product || !selectedSize) return 0;
+    
+    // Find the specific size object and return ITS stock
+    const sizeObj = product.sizes.find(s => s.size === selectedSize);
+    return sizeObj ? sizeObj.stock : 0;
+  }, [product, selectedSize]);
 
   // Handle size selection
   const handleSizeSelect = (size) => {
@@ -294,12 +296,12 @@ const ProductDetails = () => {
                   <SplideSlide key={image.public_id}>
                     <div className="image-slide">
                       <Zoom>
-  <img
-    src={image.original}
-    alt={`${product.name} - View ${index + 1}`}
-    className="main-image"
-  />
-</Zoom>
+                        <img
+                          src={image.original}
+                          alt={`${product.name} - View ${index + 1}`}
+                          className="main-image"
+                        />
+                      </Zoom>
                     </div>
                   </SplideSlide>
                 ))}
@@ -440,26 +442,31 @@ const ProductDetails = () => {
               </div> */}
 
               <div className="size-options">
-                {product.sizes.map((size) => (
-                  <button
-                    key={size}
-                    className={`size-option ${selectedSize === size ? "selected" : ""} ${
-                      availableStock === 0 ? "out-of-stock" : ""
-                    }`}
-                    onClick={() => handleSizeSelect(size)}
-                    disabled={availableStock === 0}
-                    title={
-                      availableStock === 0
-                        ? "Out of stock"
-                        : `Select size ${size}`
-                    }
-                  >
-                    {size}
-                    {selectedSize === size && (
-                      <span className="checkmark">✓</span>
-                    )}
-                  </button>
-                ))}
+                {product.sizes.map((sizeObj) => {
+                  const isSelected = selectedSize === sizeObj.size;
+                  const isOutOfStock = sizeObj.stock === 0;
+
+                  return (
+                    <button
+                      key={sizeObj.size}
+                      className={`size-option ${isSelected ? "selected" : ""} ${
+                        isOutOfStock ? "out-of-stock" : ""
+                      }`}
+                      onClick={() => handleSizeSelect(sizeObj.size)}
+                      disabled={isOutOfStock}
+                      title={
+                        isOutOfStock
+                          ? "Out of stock"
+                          : `Select size ${sizeObj.size}`
+                      }
+                    >
+                      {sizeObj.size}
+                      {isSelected && (
+                        <span className="checkmark">✓</span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
 
               {availableStock > 0 && selectedSize && (

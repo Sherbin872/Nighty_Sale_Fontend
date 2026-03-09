@@ -1,11 +1,11 @@
-import axiosInstance from './axiosConfig';
+import axiosInstance from "./axiosConfig";
 
 /* =======================
    ORDER API
 ======================= */
 export const orderApi = {
   createOrder: async (orderData) => {
-    const response = await axiosInstance.post('/orders', orderData);
+    const response = await axiosInstance.post("/orders", orderData);
     return response.data;
   },
 
@@ -15,15 +15,21 @@ export const orderApi = {
   },
 
   getMyOrders: async () => {
-    const response = await axiosInstance.get('/orders/myorders');
+    const response = await axiosInstance.get("/orders/myorders");
     return response.data;
   },
 
   updateOrderToPaid: async (orderId, paymentData) => {
     const response = await axiosInstance.put(
       `/orders/${orderId}/pay`,
-      paymentData
+      paymentData,
     );
+    return response.data;
+  },
+
+  // NEW: Add deleteOrder to remove unpaid ghost orders
+  deleteOrder: async (orderId) => {
+    const response = await axiosInstance.delete(`/orders/${orderId}`);
     return response.data;
   },
 };
@@ -33,19 +39,19 @@ export const orderApi = {
 ======================= */
 export const paymentApi = {
   getRazorpayKey: async () => {
-    const response = await axiosInstance.get('/payment/key');
+    const response = await axiosInstance.get("/payment/key");
     return response.data;
   },
 
   createRazorpayOrder: async (amount) => {
-    const response = await axiosInstance.post('/payment/checkout', { amount });
+    const response = await axiosInstance.post("/payment/checkout", { amount });
     return response.data;
   },
 
   verifyPayment: async (verificationData) => {
     const response = await axiosInstance.post(
-      '/payment/verification',
-      verificationData
+      "/payment/verification",
+      verificationData,
     );
     return response.data;
   },
@@ -61,7 +67,7 @@ export const orderUtils = {
       const qty = Number(item.quantity ?? item.qty);
 
       if (Number.isNaN(price) || Number.isNaN(qty)) {
-        console.error('Invalid cart item detected:', item);
+        console.error("Invalid cart item detected:", item);
         return acc;
       }
 
@@ -89,10 +95,7 @@ export const orderUtils = {
       product: item.productId,
       name: item.name,
       qty: item.quantity ?? item.qty,
-      image:
-        typeof item.image === 'object'
-          ? item.image.thumbnail
-          : item.image,
+      image: typeof item.image === "object" ? item.image.thumbnail : item.image,
       price: item.price,
       size: item.size,
     }));
@@ -107,20 +110,20 @@ export const orderUtils = {
   },
 
   validateShippingAddress: (address) => {
-    const required = ['address', 'city', 'postalCode', 'country', 'phone'];
+    const required = ["address", "city", "postalCode", "country", "phone"];
     const missing = required.filter((f) => !address[f]);
 
     if (missing.length) {
       return {
         isValid: false,
-        message: `Please fill in: ${missing.join(', ')}`,
+        message: `Please fill in: ${missing.join(", ")}`,
       };
     }
 
     if (!/^[0-9]{10}$/.test(address.phone)) {
       return {
         isValid: false,
-        message: 'Please enter a valid 10-digit phone number',
+        message: "Please enter a valid 10-digit phone number",
       };
     }
 
@@ -129,7 +132,7 @@ export const orderUtils = {
 
   checkStockAvailability: (cartItems) => {
     const outOfStock = cartItems.filter(
-      (item) => (item.quantity ?? item.qty) > item.countInStock
+      (item) => (item.quantity ?? item.qty) > item.countInStock,
     );
 
     if (outOfStock.length) {
@@ -150,8 +153,8 @@ export const checkoutService = {
   getOrderSummary: (cartItems = []) => {
     const totals = orderUtils.calculateOrderTotals(cartItems);
 
-    console.log('Cart Items:', cartItems);
-    console.log('Calculated Totals:', totals);
+    console.log("Cart Items:", cartItems);
+    console.log("Calculated Totals:", totals);
 
     return {
       subtotal: totals.itemsPrice,
@@ -173,32 +176,28 @@ export const checkoutService = {
     onError,
   }) => {
     try {
-      onStepChange('validating');
+      onStepChange("validating");
 
-      const addressCheck =
-        orderUtils.validateShippingAddress(shippingAddress);
+      const addressCheck = orderUtils.validateShippingAddress(shippingAddress);
       if (!addressCheck.isValid) throw new Error(addressCheck.message);
 
-      const stockCheck =
-        orderUtils.checkStockAvailability(cartItems);
+      const stockCheck = orderUtils.checkStockAvailability(cartItems);
       if (!stockCheck.available) {
-        throw new Error(
-          `Out of stock: ${stockCheck.items.join(', ')}`
-        );
+        throw new Error(`Out of stock: ${stockCheck.items.join(", ")}`);
       }
 
-      onStepChange('creating_order');
+      onStepChange("creating_order");
 
       const orderData = orderUtils.prepareOrderData(
         cartItems,
         shippingAddress,
         paymentMethod,
-        userInfo
+        userInfo,
       );
 
       const dbOrder = await orderApi.createOrder(orderData);
 
-      onStepChange('processing_payment');
+      onStepChange("processing_payment");
 
       await razorpayService.initializePayment({
         dbOrderId: dbOrder._id,
@@ -208,13 +207,16 @@ export const checkoutService = {
         onFailure: onError,
       });
     } catch (err) {
-      console.error('Checkout error:', err);
-      onError(err.message || 'Checkout failed');
-      onStepChange('failed');
+      console.error("Checkout error:", err);
+      onError(err.message || "Checkout failed");
+      onStepChange("failed");
     }
   },
 };
 
+/* =======================
+   RAZORPAY SERVICE
+======================= */
 /* =======================
    RAZORPAY SERVICE
 ======================= */
@@ -231,149 +233,93 @@ export const razorpayService = {
 
     await razorpayService.loadRazorpayScript();
 
-   const rzp = new window.Razorpay({
-  key,
-  amount: order.amount,
-  currency: order.currency,
-  name: 'Nighty Store',
-  description: `Order #${dbOrderId}`,
-  order_id: order.id,
+    const rzp = new window.Razorpay({
+      key,
+      amount: order.amount,
+      currency: order.currency,
+      name: "Nighty Store",
+      description: `Order #${dbOrderId}`,
+      order_id: order.id,
 
-  method: {
-    upi: true,
-    card: true,
-    wallet: true,
-    netbanking: true,
-  },
+      method: {
+        upi: true,
+        card: true,
+        wallet: true,
+        netbanking: true,
+      },
 
-  handler: async (response) => {
-    try {
-      await paymentApi.verifyPayment({
-        ...response,
-        orderId: dbOrderId,
-      });
-      await orderApi.updateOrderToPaid(dbOrderId, response);
-      onSuccess(dbOrderId);
-    } catch {
-      onFailure('Payment verification failed');
-    }
-  },
+      // NEW: Catch when user manually closes the Razorpay modal
+      modal: {
+        ondismiss: async function () {
+          try {
+            console.log('User closed payment modal. Deleting unpaid order...');
+            await orderApi.deleteOrder(dbOrderId);
+            onFailure('Payment cancelled by user');
+          } catch (err) {
+            console.error('Failed to clean up cancelled order:', err);
+            onFailure('Payment cancelled');
+          }
+        }
+      },
 
-  prefill: {
-    name: userInfo?.name,
-    email: userInfo?.email,
-    contact: userInfo?.phone,
-  },
-});
+      handler: async (response) => {
+        try {
+          await paymentApi.verifyPayment({
+            ...response,
+            orderId: dbOrderId,
+          });
+          await orderApi.updateOrderToPaid(dbOrderId, response);
+          onSuccess(dbOrderId);
+        } catch {
+          // NEW: Delete order if verification fails
+          await orderApi.deleteOrder(dbOrderId).catch(console.error);
+          onFailure("Payment verification failed. Order removed.");
+        }
+      },
 
+      prefill: {
+        name: userInfo?.name,
+        email: userInfo?.email,
+        contact: userInfo?.phone,
+      },
+    });
+
+    // NEW: Catch when a payment actually fails (declined card, wrong UPI pin, etc.)
+    rzp.on('payment.failed', async function (response) {
+      try {
+        console.log('Payment failed. Deleting unpaid order...');
+        await orderApi.deleteOrder(dbOrderId);
+        onFailure(`Payment Failed: ${response.error.description}`);
+      } catch (err) {
+        console.error('Failed to delete order after payment failure', err);
+        onFailure('Payment Failed');
+      }
+    });
 
     rzp.open();
   },
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // initializePayment: async ({
-  //   dbOrderId,
-  //   amount,
-  //   userInfo,
-  //   onSuccess,
-  //   onFailure,
-  // }) => {
-    
   // /* =============================
   //    DEV MODE PAYMENT BYPASS
   // ============================== */
   // let VITE_SKIP_PAYMENT = 'true'
   // if (VITE_SKIP_PAYMENT === 'true') {
   //   console.warn('⚠️ DEV MODE: Payment bypassed');
-
-  //   // Fake Razorpay response
   //   const fakePayment = {
   //     razorpay_order_id: 'DEV_ORDER_ID',
   //     razorpay_payment_id: 'DEV_PAYMENT_ID',
   //     razorpay_signature: 'DEV_SIGNATURE',
   //   };
-
-  //   // Directly mark order as paid
   //   await orderApi.updateOrderToPaid(dbOrderId, fakePayment);
-
   //   onSuccess(dbOrderId);
   //   return;
   // }
 
-  // /* =============================
-  //    REAL RAZORPAY FLOW
-  // ============================== */
-
-  // const { key } = await paymentApi.getRazorpayKey();
-  // const { order } = await paymentApi.createRazorpayOrder(amount);
-
-  // await razorpayService.loadRazorpayScript();
-
-  // const rzp = new window.Razorpay({
-  //   key,
-  //   amount: order.amount,
-  //   currency: order.currency,
-  //   name: 'Nighty Store',
-  //   description: `Order #${dbOrderId}`,
-  //   order_id: order.id,
-
-  //   handler: async (response) => {
-  //     try {
-  //       await paymentApi.verifyPayment({
-  //         ...response,
-  //         orderId: dbOrderId,
-  //       });
-
-  //       await orderApi.updateOrderToPaid(dbOrderId, response);
-  //       onSuccess(dbOrderId);
-  //     } catch {
-  //       onFailure('Payment verification failed');
-  //     }
-  //   },
-
-  //   prefill: {
-  //     name: userInfo?.name,
-  //     email: userInfo?.email,
-  //     contact: userInfo?.phone,
-  //   },
-  // });
-
-  // rzp.open();
-  // },
-
-
-
-
-
-
-
-
-
-
-
-
   loadRazorpayScript: () =>
     new Promise((resolve) => {
       if (window.Razorpay) return resolve();
-      const s = document.createElement('script');
-      s.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      const s = document.createElement("script");
+      s.src = "https://checkout.razorpay.com/v1/checkout.js";
       s.onload = resolve;
       document.body.appendChild(s);
     }),

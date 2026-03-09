@@ -5,7 +5,7 @@ import { FiTrash2 } from "react-icons/fi";
 
 
 const CartItem = memo(
-  ({ item, localQuantity, onQuantityChange, onRemove, isUpdating }) => {
+  ({ item, localQuantity, onQuantityChange, onRemove, isUpdating, maxStock }) => {
     const { name, price, image, size, productId } = item;
 
     // Extract color from name (following your UI pattern)
@@ -19,7 +19,10 @@ const CartItem = memo(
     // console.log("Extracted product sizeeeeeeeeeee:", size);
 
     const handleIncrement = () => {
-      onQuantityChange(localQuantity + 1);
+      // FIX: Prevent clicking past max stock
+      if (localQuantity < maxStock) {
+        onQuantityChange(localQuantity + 1);
+      }
     };
 
     const handleDecrement = () => {
@@ -90,7 +93,7 @@ const CartItem = memo(
 
                 <button
                   onClick={handleIncrement}
-                  disabled={isUpdating}
+                  disabled={isUpdating || localQuantity >= maxStock}
                   className="quantity-btn increment"
                   aria-label="Increase quantity"
                 >

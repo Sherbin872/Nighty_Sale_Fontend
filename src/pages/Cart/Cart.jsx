@@ -140,6 +140,7 @@ const Cart = () => {
   }, [dispatch]);
 
   // Handle quantity change
+// Handle quantity change
   const handleQuantityChange = useCallback((productId, size, newQuantity) => {
     const key = `${productId}-${size}`;
     
@@ -151,9 +152,12 @@ const Cart = () => {
       item => item.productId === productId && item.size === size
     );
     
-    if (cartItem && newQuantity > cartItem.countInStock) {
-      toast.error(`Only ${cartItem.countInStock} items available`);
-      newQuantity = cartItem.countInStock;
+    // FIX: Use maxQuantity (per-size stock) instead of countInStock (total stock)
+    const maxStock = cartItem.maxQuantity !== undefined ? cartItem.maxQuantity : cartItem.countInStock;
+    
+    if (cartItem && newQuantity > maxStock) {
+      toast.error(`Only ${maxStock} items available in this size`);
+      newQuantity = maxStock;
     }
     
     // Optimistic local update
@@ -231,6 +235,7 @@ const Cart = () => {
                       <CartItem
                         item={item}
                         localQuantity={localQuantities[key] || item.quantity}
+                        maxStock={item.maxQuantity !== undefined ? item.maxQuantity : item.countInStock}
                         onQuantityChange={(newQty) =>
                           handleQuantityChange(item.productId, item.size, newQty)
                         }

@@ -22,10 +22,16 @@ export const updateOrderStatus = async (orderId, status) => {
   return data;
 };
 
+export const deleteOrder = async (orderId) => {
+  const { data } = await axiosInstance.delete(`/orders/${orderId}`);
+  return data;
+};
+
 
 export default {
   getOrderById,
   getMyOrders,
   getAllOrders,
   updateOrderStatus,
+  deleteOrder,
 };

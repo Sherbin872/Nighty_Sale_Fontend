@@ -278,6 +278,51 @@ textarea.ns-product-form-input {
   to { transform: rotate(360deg); }
 }
 
+.ns-readonly-input {
+  background-color: #F3F4F6 !important;
+  color: #6B7280 !important;
+  border-color: #E5E7EB !important;
+  cursor: not-allowed;
+}
+
+.ns-helper-text {
+  display: block; font-size: 12px; color: #6B7280; margin-top: 4px;
+}
+
+.ns-size-stock-grid {
+  margin-top: 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 350px; 
+}
+
+.ns-size-stock-header {
+  display: flex; justify-content: space-between;
+  background-color: #F9FAFB;
+  padding: 10px 16px;
+  font-size: 12px; font-weight: 600; color: #6B7280;
+  text-transform: uppercase;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.ns-size-stock-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.ns-size-stock-row:last-child { border-bottom: none; }
+.ns-size-label { font-weight: 500; color: #111827; }
+
+.ns-stock-input {
+  width: 100px !important;
+  padding: 6px 10px !important;
+  text-align: right;
+}
+
+
+
 /* Mobile Responsiveness */
 @media (max-width: 900px) {
   .ns-product-form-grid {
