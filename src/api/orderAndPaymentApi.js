@@ -74,10 +74,17 @@ export const orderUtils = {
       return acc + price * qty;
     }, 0);
 
+    // NEW: Calculate total physical quantity of all items in the cart
+    const totalQuantity = cartItems.reduce((acc, item) => {
+      const qty = Number(item.quantity ?? item.qty);
+      return acc + (Number.isNaN(qty) ? 0 : qty);
+    }, 0);
+
     const taxPrice = 0;
-    const shippingPrice = 0;
-    // const taxPrice = Math.round(itemsPrice * 0.18);
-    // const shippingPrice = itemsPrice > 1000 ? 0 : 50;
+    
+    // FIX: Set shipping to 0 if total quantity is 3 or more, otherwise 50
+    const shippingPrice = totalQuantity >= 3 ? 0 : 50;
+    
     const totalPrice = itemsPrice + taxPrice + shippingPrice;
 
     return {
@@ -87,7 +94,7 @@ export const orderUtils = {
       totalPrice,
     };
   },
-
+// ... leave prepareOrderData, etc. exactly as they are
   prepareOrderData: (cartItems, shippingAddress, paymentMethod, userInfo) => {
     const totals = orderUtils.calculateOrderTotals(cartItems);
 
@@ -162,10 +169,10 @@ export const checkoutService = {
       shipping: totals.shippingPrice,
       total: totals.totalPrice,
       freeShipping: totals.shippingPrice === 0,
-      freeShippingThreshold: 1000,
+      freeShippingThreshold: 3, // FIX: Updated threshold from 1000 rupees to 3 items
     };
   },
-
+// ... leave processCheckout exactly as it 
   processCheckout: async ({
     cartItems,
     shippingAddress,

@@ -1,15 +1,16 @@
-// src/components/common/Alert.jsx - Simple alert function
-const showAlert = (message, type = 'info') => {
-
+// src/components/common/Alert.jsx
+const Alert = (message, type = 'info') => {
+  // FIX: Handle both simple strings and Error objects safely
+  const textToShow = typeof message === 'string' ? message : (message?.message || String(message));
 
   // Create alert element
-  // console.log(message.message);
-  
   const alert = document.createElement('div');
   alert.className = `global-alert global-alert-${type}`;
+  
+  // FIX: Removed the inline onclick string, we will add an event listener below
   alert.innerHTML = `
-    <span>${message.message}</span>
-    <button onclick="this.parentElement.remove()">×</button>
+    <span>${textToShow}</span>
+    <button class="ns-alert-close-btn">×</button>
   `;
   
   // Style
@@ -27,6 +28,7 @@ const showAlert = (message, type = 'info') => {
     z-index: 9999;
     animation: slideIn 0.3s ease;
     max-width: 400px;
+    font-family: inherit;
   `;
   
   // Type-specific styles
@@ -41,6 +43,12 @@ const showAlert = (message, type = 'info') => {
   
   // Add to DOM
   document.body.appendChild(alert);
+
+  // FIX: Add a proper event listener to the close button
+  const closeBtn = alert.querySelector('.ns-alert-close-btn');
+  closeBtn.addEventListener('click', () => {
+    alert.remove();
+  });
   
   // Auto-remove after 3 seconds
   setTimeout(() => {
@@ -49,7 +57,7 @@ const showAlert = (message, type = 'info') => {
     }
   }, 3000);
   
-  // Add CSS animation
+  // Add CSS animation (only once)
   if (!document.querySelector('#alert-styles')) {
     const style = document.createElement('style');
     style.id = 'alert-styles';
@@ -71,10 +79,5 @@ const showAlert = (message, type = 'info') => {
     document.head.appendChild(style);
   }
 };
- 
 
-export default showAlert;
-
-// Use in ProductDetails.jsx
-// import { showAlert } from '../../components/common/Alert';
-// showAlert('Product added to cart!', 'success');
+export default Alert;

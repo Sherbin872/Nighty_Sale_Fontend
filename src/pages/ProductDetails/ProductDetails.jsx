@@ -72,12 +72,12 @@ const ProductDetails = () => {
   }, [id]);
 
   // Reset selection when product changes
- // Reset selection when product changes
+  // Reset selection when product changes
   useEffect(() => {
     if (product) {
       if (product.sizes && product.sizes.length > 0) {
         // Smart select: Find the first size that is actually in stock
-        const inStockSize = product.sizes.find(s => s.stock > 0);
+        const inStockSize = product.sizes.find((s) => s.stock > 0);
         setSelectedSize(inStockSize ? inStockSize.size : product.sizes[0].size);
       }
       setQuantity(1);
@@ -100,28 +100,43 @@ const ProductDetails = () => {
     );
   };
 
- // Get available stock for selected size
+  // Get available stock for selected size
   const getAvailableStock = useCallback(() => {
     if (!product || !selectedSize) return 0;
-    
-    // Find the specific size object and return ITS stock
-    const sizeObj = product.sizes.find(s => s.size === selectedSize);
+    const sizeObj = product.sizes.find((s) => s.size === selectedSize);
     return sizeObj ? sizeObj.stock : 0;
   }, [product, selectedSize]);
 
+  // NEW: Calculate how many MORE can be added (Total Stock minus what's already in cart)
+  const getRemainingStock = useCallback(() => {
+    const totalAvailable = getAvailableStock();
+    const existingCartItem = cartItems.find(
+      (item) => item.productId === product?._id && item.size === selectedSize,
+    );
+    const quantityInCart = existingCartItem ? existingCartItem.quantity : 0;
+
+    return Math.max(0, totalAvailable - quantityInCart);
+  }, [getAvailableStock, cartItems, product, selectedSize]);
+
   // Handle size selection
+  // Handle size selection (Reset quantity to 1 when switching sizes)
   const handleSizeSelect = (size) => {
     setSelectedSize(size);
+    setQuantity(1);
   };
 
   // Handle quantity change
   const handleQuantityChange = (change) => {
-    const availableStock = getAvailableStock();
+    const remainingStock = getRemainingStock();
     const newQuantity = quantity + change;
 
     if (newQuantity < 1) return;
-    if (newQuantity > availableStock) {
-      setQuantity(availableStock);
+    if (newQuantity > remainingStock) {
+      console.log(`You can only add ${remainingStock} more. You already have some in your cart.`);
+      
+      Alert(
+        `You can only add ${remainingStock} more. You already have some in your cart.`,
+      );
       return;
     }
 
@@ -135,14 +150,28 @@ const ProductDetails = () => {
       return;
     }
 
-    if (product.countInStock === 0) {
+    const remainingStock = getRemainingStock();
+
+    if (getAvailableStock() === 0) {
       Alert("This product is out of stock");
+      return;
+    }
+
+    if (remainingStock === 0) {
+      Alert(
+        "You already have the maximum available stock for this size in your cart.",
+      );
+      return;
+    }
+
+    if (quantity > remainingStock) {
+      Alert(`You can only add ${remainingStock} more to your cart.`);
+      setQuantity(remainingStock);
       return;
     }
 
     try {
       setAddingToCart(true);
-
       const cartItem = {
         productId: product._id,
         name: product.name,
@@ -151,17 +180,12 @@ const ProductDetails = () => {
         countInStock: product.countInStock,
         size: selectedSize,
         quantity: quantity,
-        maxQuantity: getAvailableStock(),
+        maxQuantity: getAvailableStock(), // Pass the absolute max for the cart to track
       };
 
       dispatch(addToCart(cartItem));
-
       setSuccessMessage(`Added ${quantity} × ${product.name} to cart!`);
-
-      // Clear success message after 3 seconds
-      setTimeout(() => {
-        setSuccessMessage("");
-      }, 3000);
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
       console.error("Error adding to cart:", error);
       Alert("Failed to add to cart. Please try again.");
@@ -170,6 +194,39 @@ const ProductDetails = () => {
     }
   };
 
+  // Handle buy now
+  const handleBuyNow = () => {
+    if (!selectedSize) {
+      Alert("Please select a size");
+      return;
+    }
+
+    const remainingStock = getRemainingStock();
+
+    if (remainingStock === 0) {
+      Alert(
+        "You already have the maximum available stock for this size in your cart. Proceeding to checkout.",
+      );
+      navigate("/cart");
+      return;
+    }
+
+    const qtyToAdd = Math.min(quantity, remainingStock);
+
+    const cartItem = {
+      productId: product._id,
+      name: product.name,
+      image: product.image.thumbnail,
+      price: product.price,
+      countInStock: product.countInStock,
+      size: selectedSize,
+      quantity: qtyToAdd,
+      maxQuantity: getAvailableStock(),
+    };
+
+    dispatch(addToCart(cartItem));
+    navigate("/cart");
+  };
   // Format price
   const formatPrice = (price) => {
     return new Intl.NumberFormat("en-IN", {
@@ -181,29 +238,29 @@ const ProductDetails = () => {
   };
 
   // Handle buy now
-  const handleBuyNow = () => {
-    if (!selectedSize) {
-      Alert("Please select a size");
-      return;
-    }
+  // const handleBuyNow = () => {
+  //   if (!selectedSize) {
+  //     Alert("Please select a size");
+  //     return;
+  //   }
 
-    // Add to cart first
-    const cartItem = {
-      productId: product._id,
-      name: product.name,
-      image: product.image.thumbnail,
-      price: product.price,
-      countInStock: product.countInStock,
-      size: selectedSize,
-      quantity: quantity,
-      maxQuantity: getAvailableStock(),
-    };
+  //   // Add to cart first
+  //   const cartItem = {
+  //     productId: product._id,
+  //     name: product.name,
+  //     image: product.image.thumbnail,
+  //     price: product.price,
+  //     countInStock: product.countInStock,
+  //     size: selectedSize,
+  //     quantity: quantity,
+  //     maxQuantity: getAvailableStock(),
+  //   };
 
-    dispatch(addToCart(cartItem));
+  //   dispatch(addToCart(cartItem));
 
-    // Navigate to checkout
-    navigate("/cart");
-  };
+  //   // Navigate to checkout
+  //   navigate("/cart");
+  // };
 
   // Handle image gallery navigation
   const handleThumbnailClick = (index) => {
@@ -461,9 +518,7 @@ const ProductDetails = () => {
                       }
                     >
                       {sizeObj.size}
-                      {isSelected && (
-                        <span className="checkmark">✓</span>
-                      )}
+                      {isSelected && <span className="checkmark">✓</span>}
                     </button>
                   );
                 })}

@@ -24,7 +24,7 @@ const CartSummary = memo(({
         <div className="summary-row">
           <span className="row-label">Shipping</span>
           <span className={`row-value ${shipping === 0 ? 'free' : ''}`}>
-            {shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}
+            {shipping === 0 ? 'FREE' : `₹${shipping.toFixed(2)}`}
           </span>
         </div>
         

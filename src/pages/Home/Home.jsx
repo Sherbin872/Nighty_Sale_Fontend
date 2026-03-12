@@ -96,7 +96,7 @@ useEffect(() => {
           <div className="hero-overlay">
             <div className="hero-content">
               <span className="hero-badge">Exclusive Comfort</span>
-              <h1 className="hero-title">Serene Evenings</h1>
+              <h1 className="hero-title">Where Comfort Meets Elegance</h1>
               <p className="hero-subtitle">
                 Rediscover relaxation with our premium sage-inspired lounge collection.
               </p>  

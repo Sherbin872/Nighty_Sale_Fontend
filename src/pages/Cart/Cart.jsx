@@ -76,14 +76,21 @@ const Cart = () => {
   }, [cartItems]);
 
   // Cart calculations
-  const cartTotals = useMemo(() => {
+ const cartTotals = useMemo(() => {
     const subtotal = cartItems.reduce(
       (sum, item) => sum + (item.price * item.quantity),
       0
     );
-    
+
+    // NEW: Calculate the total physical quantity of items in the cart
+    const totalQuantity = cartItems.reduce(
+      (sum, item) => sum + item.quantity, 
+      0
+    );
+
     // Free shipping over $50, else $5.99
-    const shipping = subtotal > 50 ? 0 : 0;
+    // const shipping = subtotal > 50 ? 0 : 0;
+    const shipping = totalQuantity >= 3 ? 0 : 50;
     
     // Calculate tax (2% of subtotal based on your example)
     const tax = 0;
@@ -100,7 +107,7 @@ const Cart = () => {
       tax, 
       discount,
       total,
-      itemCount: cartItems.length 
+      itemCount: totalQuantity
     };
   }, [cartItems, promoApplied]);
 
@@ -209,10 +216,11 @@ const Cart = () => {
     <div className="cart-page">
       <div className="cart-container">
         {/* Header */}
+       {/* Header */}
         <div className="cart-header">
           <h1 className="cart-title">Shopping Cart</h1>
           <p className="cart-subtitle">
-            {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}
+            {cartTotals.itemCount} {cartTotals.itemCount === 1 ? 'item' : 'items'}
           </p>
         </div>
 
