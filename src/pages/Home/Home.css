@@ -138,7 +138,7 @@
 }
 
 .btn-primary {
-  background-color: var(--primary) !important;
+  background-color: var(--brown) !important;
   color: var(--cream);
   box-shadow: 0 4px 6px rgba(45, 65, 47, 0.2);
 }
