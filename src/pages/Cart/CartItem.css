@@ -1,4 +1,13 @@
 /* CartItem.css */
+:root{
+  
+   --brown: #550000;
+  --text-main: #550000;
+  --text-light: #424242;
+  --white: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --pink:#fdfaf5;
+}
 .cart-item {
   background-color: var(--surface);
   display: grid;
@@ -61,7 +70,7 @@
 .product-name {
   font-size: 1.5rem !important;
   font-weight: 600;
-  color: #000000 !important;
+  color: var(--brown) !important;
   margin-bottom: 0.25rem;
   line-height: 1.4;
 
@@ -102,7 +111,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background-color: #bdf1a9a9;
+  background-color: #690000c9;
   border-radius: 20px;
   padding: 0.25rem;
   width: fit-content;
@@ -114,10 +123,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #e4fcdbe0 !important;
+  background-color: #ffffff2d !important;
   background: none;
   border: none;
-  color: #000000;
+  color: #ffffff;
   cursor: pointer;
   border-radius: 50%;
   transition: all 0.2s ease;
@@ -140,7 +149,7 @@
 .quantity-display {
   font-size: 0.875rem;
   font-weight: 700;
-  color: #000000;
+  color: #ffffff;
   min-width: 20px;
   text-align: center;
 

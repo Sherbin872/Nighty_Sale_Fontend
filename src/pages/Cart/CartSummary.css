@@ -1,4 +1,13 @@
 /* CartSummary.css */
+:root{
+  
+   --brown: #550000;
+  --text-main: #550000;
+  --text-light: #424242;
+  --white: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --pink:#fdfaf5;
+}
 .cart-summary {
   background-color: #fafafa;
   border-radius: 8px;
@@ -80,7 +89,7 @@
 .total-value {
   font-size: 1.55rem;
   font-weight: 600 !important;
-  color: #000000;
+  color: var(--brown);
 
     font-family: "Winky Sans", sans-serif;
   font-optical-sizing: auto;
@@ -90,7 +99,7 @@
 /* Checkout Button */
 .checkout-btn {
   width: 100%;
-  background-color: #000000;
+  background-color: var(--brown);
   color: #ffffff;
   border: none;
   padding: 1.5rem 1.5rem;

@@ -11,6 +11,13 @@
   --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.08);
   --border-radius: 8px;
   --transition: all 0.2s ease;
+
+   --brown: #550000;
+  --text-main: #550000;
+  --text-light: #424242;
+  --white: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --pink:#fdfaf5;
 }
 
 /* Reset and Base Styles */
@@ -49,7 +56,7 @@ body {
 .cart-title {
   font-size: 2rem;
   /* font-weight: 400; */
-  color: white;
+  color: var(--brown);
 
  font-family: "Engagement", cursive;
   font-weight: 600;
