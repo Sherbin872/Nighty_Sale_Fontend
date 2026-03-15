@@ -260,7 +260,7 @@ body {
 
 .continue-shopping-btn {
   display: inline-block;
-  background-color: var(--primary-color);
+  background-color: var(--brown);
   color: var(--white);
   border: none;
   padding: 0.875rem 2rem;

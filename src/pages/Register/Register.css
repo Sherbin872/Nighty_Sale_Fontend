@@ -1,4 +1,13 @@
 /* src/pages/Register/Register.css */
+:root{
+  
+   --brown: #550000;
+  --text-main: #550000;
+  --text-light: #424242;
+  --white: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --pink:#fdfaf5;
+}
 .register-page {
   margin-top: 60px;
   min-height: 100vh;
@@ -56,7 +65,7 @@
 }
 
 .terms-agreement .link {
-  color: #81c784;
+  color: var(--brown);
   text-decoration: none;
 }
 

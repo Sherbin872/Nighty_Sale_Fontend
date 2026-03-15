@@ -1,4 +1,13 @@
 /* src/pages/Login/Login.css */
+:root{
+  
+   --brown: #550000;
+  --text-main: #550000;
+  --text-light: #424242;
+  --white: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --pink:#fdfaf5;
+}
 .login-page {
   min-height: 100vh;
   display: flex;
@@ -37,7 +46,9 @@
 .login-form {
   margin-bottom: 1.5rem;
 }
-
+input:active, input:focus{
+  border-color: #550000 !important;
+}
 .form-options {
   display: flex;
   justify-content: space-between;
@@ -57,18 +68,19 @@
 .checkbox-label input {
   width: 16px;
   height: 16px;
-  accent-color: #81c784;
+  
+  accent-color: var(--brown);
 }
 
 .forgot-link {
-  color: #81c784;
+  color: var(--brown);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
 }
 
 .forgot-link:hover {
-  color: #66bb6a;
+  color: var(--brown);
   text-decoration: underline;
 }
 
@@ -99,7 +111,7 @@
 }
 
 .link {
-  color: #81c784;
+  color: var(--brown);
   text-decoration: none;
   font-weight: 600;
 }

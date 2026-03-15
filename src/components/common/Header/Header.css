@@ -7,12 +7,12 @@
   --primary-muted: #550000;
   --brown: #550000;
   --background: #550000;
-  
-  --cream: #FFFDD0;
-  --surface: #FFFDD0;
-  --text-main: #2D412F;
-  --text-light: #556B58;
-  --white: #FFFFFF;
+
+  --cream: #fffdd0;
+  --surface: #fffdd0;
+  --text-main: #2d412f;
+  --text-light: #556b58;
+  --white: #ffffff;
   --shadow: rgba(0, 0, 0, 0.1);
 }
 
@@ -43,36 +43,31 @@
   justify-content: space-between;
   padding: 1rem 2.5rem;
 }
-.mobile_logo{
+.mobile_logo {
   display: none !important;
 }
 /* Logo */
-.logo img{
+.logo img {
   /* height: 50px; */
-  border-radius: 15px ;
+  border-radius: 15px;
   height: 80px;
   /* width: 170px; */
   display: flex;
   align-items: center;
   justify-content: center;
-  
 }
 .logo a {
   text-decoration: none;
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
   font-style: italic;
 }
 
 .logo-text {
-  font-size: 1.8rem;
+  font-size: 2.3rem;
   font-weight: 700;
   color: #f2b601;
   margin: 0;
   transition: color 0.3s ease;
-}
-
-.logo-text:hover {
-  color: white;
 }
 
 .logo-subtitle {
@@ -104,7 +99,7 @@
 }
 
 .nav-link::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -476,7 +471,7 @@
   }
 
   .logo-text {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
 
   /* Adjust header for mobile */
@@ -495,7 +490,7 @@
   .header-content {
     padding: 0.5rem 1rem;
   }
-  .mainLogo{
+  .mainLogo {
     /* display: none !important; */
     height: 60px !important;
   }
@@ -505,7 +500,7 @@
   } */
 
   .logo-text {
-    font-size: 1.3rem;
+    font-size: 1.8rem;
   }
 
   .mobile-menu-content {

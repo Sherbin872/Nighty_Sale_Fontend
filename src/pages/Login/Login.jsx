@@ -81,6 +81,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="login-form">
           <Input
+          className='inp'
             label="Email"
             type="email"
             name="email"
@@ -92,6 +93,7 @@ const Login = () => {
           />
 
           <Input
+          className='inp'
             label="Password"
             type="password"
             name="password"

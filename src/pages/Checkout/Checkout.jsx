@@ -578,7 +578,7 @@ const Checkout = () => {
               {/* Order Totals */}
               <div className="order-totals">
                 <div className="total-row">
-                  <span className="total-label">Subtotal</span>
+                  <span className="total-label sub">Subtotal</span>
                   <span className="total-value">
                     ₹{orderTotals.itemsPrice.toFixed(2)}
                   </span>
@@ -620,7 +620,7 @@ const Checkout = () => {
 
                 <div className="total-row grand-total">
                   <span className="total-label">TOTAL AMOUNT</span>
-                  <span className="total-value">
+                  <span className="ttotal-value ">
                     ₹{orderTotals.totalPrice.toFixed(2)}
                   </span>
                 </div>
