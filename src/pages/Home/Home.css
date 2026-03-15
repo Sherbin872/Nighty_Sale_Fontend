@@ -4,21 +4,24 @@
   --primary: #2D412F;
   --primary-accent: #A3D48F;
   --primary-muted: #C2E2B5;
-  --background-main: #A3D48F;
+  --background-main: #ffffff;
+
   /* --background-main: #fcfbf5; */
   --cream: #ffffff;
   /* --cream: #FFFDD0; */
   --surface: #FFFDD0;
-  --text-main: #2D412F;
-  --text-light: #556B58;
-  --white: #ee2b6c;
+  --brown: #550000;
+  --text-main: #550000;
+  --text-light: #424242;
+  --white: #ffffff;
   --shadow: rgba(0, 0, 0, 0.1);
+  --pink:#fdfaf5;
 }
 
 .home-page {
   
   width: 100% !important;
-  background-color: var(--background-main);
+  background-color: var(--pink);
   min-height: 100vh;
   color: var(--text-main);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -66,6 +69,7 @@
 .hero-content {
   height: 100%;
   width: 700px !important;
+  color: #550000 !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,7 +80,7 @@
 .hero-badge {
   display: inline-block;
   background-color: var(--white);
-  color: var(--primary);
+  /* color: var(--primary); */
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -93,13 +97,13 @@
   font-size: 4.9rem !important;
   line-height: 1.1;
   font-weight: 100 !important;
-  color: var(--primary);
+  /* color: var(--primary); */
   margin-bottom: 1rem;
 }
 
 .hero-subtitle {
   text-align: center;
-  color: var(--text-main);
+  color: #424242 !important;
   opacity: 0.8;
   letter-spacing: 2px;
   font-size: 1.2rem;
@@ -249,7 +253,7 @@
   font-style: italic;
   font-weight: 100;
   font-size: 2.4rem;
-  color: var(--cream) !important;
+  color: var(--text-main) !important;
   margin: 0;
 }
 
@@ -418,7 +422,7 @@
 
 /* Value Propositions */
 .value-propositions {
-  background-color: var(--surface);
+  background-color: var(--brown);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 2.5rem;
   padding: 2rem;
@@ -447,7 +451,8 @@
 .value-title {
   font-size: 9px;
   font-weight: 700;
-  color: rgba(45, 65, 47, 0.7);
+  /* color: rgba(45, 65, 47, 0.7); */
+  color: var(--white);
   text-transform: uppercase;
   letter-spacing: 0.15em;
   line-height: 1.4;

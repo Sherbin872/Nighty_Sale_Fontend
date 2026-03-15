@@ -1,3 +1,11 @@
+:root {
+  
+  --brown: #550000;
+  --text-main: #550000;
+  --text-light: #424242;
+  --white: #ffffff;
+  --pink:#fdfaf5;
+}
 
 .product-card {
   position: relative;
@@ -154,7 +162,7 @@
 
 .pcproduct-name {
   font-size: 0.9rem;
-  color: white !important;
+  color: var(--brown) !important;
   /* margin: 0 0 8px; */
   margin-bottom: 2px !important;
   /* background-color: #FF6B8B; */
@@ -174,10 +182,10 @@
   font-style: normal;
 }
 
-.current-price {
+.ccurrent-price {
   font-size: 1.1rem;
   font-weight: 600;
-  color: white;
+  color: black;
   /* background-color: blue; */
   display: block;
   margin-bottom: 0px !important;

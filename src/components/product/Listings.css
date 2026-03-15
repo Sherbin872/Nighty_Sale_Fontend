@@ -1,15 +1,18 @@
 /* src/components/product/Listings.css */
 :root {
   --primary: #2D412F;
-  --primary-accent: #A3D48F;
-  --primary-muted: #C2E2B5;
-  --background-main: #A3D48F;
+  --primary-accent: #550000;
+  --primary-muted: #550000;
+  --background-main: #550000;
   --cream: #FFFDD0;
   --surface: #FFFDD0;
-  --text-main: #2D412F;
-  --text-light: #556B58;
-  --white: #FFFFFF;
+
+   --brown: #550000;
+  --text-main: #550000;
+  --text-light: #424242;
+  --white: #ffffff;
   --shadow: rgba(0, 0, 0, 0.1);
+  --pink:#fdfaf5;
 }
 
 .listings-container {
@@ -361,7 +364,7 @@
 
 .retry-btn {
   padding: 0.75rem 2rem;
-  background-color: var(--primary-accent);
+  background-color: var(--brown);
   color: var(--white);
   border: none;
   border-radius: 8px;
@@ -370,7 +373,7 @@
 }
 
 .retry-btn:hover {
-  background-color: #8BCB78;
+  background-color: var(--brown);
 }
 
 
@@ -529,7 +532,7 @@
 
 .sort-select:focus {
   outline: none;
-  border-color: var(--primary-accent);
+  border-color: var(--brown) !important;
 }
 
 /* Listings Content Layout */
@@ -698,11 +701,11 @@
 
 .filter-btn:hover {
   background: #f5f5f5;
-  border-color: #A3D48F;
+  border-color: var(--brown);
 }
 
 .filter-icon {
-  color: #A3D48F;
+  color: var(--brown);
 }
 
 .filter-badge {

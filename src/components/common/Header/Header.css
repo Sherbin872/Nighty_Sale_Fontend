@@ -2,10 +2,12 @@
 
 :root {
   /* Colors from the design */
-  --primary: #2D412F;
-  --primary-accent: #A3D48F;
-  --primary-muted: #C2E2B5;
-  --background-main: #A3D48F;
+  --primary: #550000;
+  --primary-accent: #550000;
+  --primary-muted: #550000;
+  --brown: #550000;
+  --background: #550000;
+  
   --cream: #FFFDD0;
   --surface: #FFFDD0;
   --text-main: #2D412F;
@@ -15,7 +17,7 @@
 }
 
 .header {
-  background: var(--primary-accent);
+  background: var(--background);
   width: 100%;
   color: var(--white);
   position: sticky;
@@ -27,7 +29,7 @@
 
 .header.scrolled {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  background: rgba(163, 212, 143, 0.95);
+  /* background: rgba(163, 212, 143, 0.95); */
   backdrop-filter: blur(10px);
 }
 
@@ -64,7 +66,7 @@
 .logo-text {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--white);
+  color: #f2b601;
   margin: 0;
   transition: color 0.3s ease;
 }
@@ -320,8 +322,8 @@
 }
 
 .mobile-nav-link:hover {
-  background: var(--primary-muted);
-  color: var(--primary);
+  background: var(--brown);
+  color: var(--white);
   padding-left: 1.5rem;
 }
 
@@ -377,9 +379,9 @@
 }
 
 .mobile-logout-btn:hover {
-  background: #ff6b6b;
+  background: var(--brown);
   color: white;
-  border-color: #ff6b6b;
+  border-color: var(--brown);
 }
 
 .mobile-auth-buttons {

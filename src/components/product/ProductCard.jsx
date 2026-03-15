@@ -93,7 +93,7 @@ const ProductCard = ({ product }) => {
             {product.name}
           </span>
 
-          <span className="current-price">{formatPrice(product.price)}</span>
+          <span className="ccurrent-price">{formatPrice(product.price)}</span>
         </div>
       </Link>
     </div>

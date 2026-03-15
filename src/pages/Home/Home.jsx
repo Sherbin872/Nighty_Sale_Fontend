@@ -102,7 +102,7 @@ useEffect(() => {
               </p>  
               <div className="hero-buttons">
                 <button className="btn-primary" onClick={scrollToCollections}>Shop Now</button>
-                <button className="btn-secondary">Our Story</button>
+                {/* <button className="btn-secondary">Our Story</button> */}
               </div>
             </div>
           </div>

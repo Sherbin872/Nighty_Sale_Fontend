@@ -1,8 +1,17 @@
 
 /* Footer */
+:root {
+ 
+  --brown: #550000;
+  --text-main: #550000;
+  --text-light: #424242;
+  --white: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --pink:#fdfaf5;
+}
 .home-footer {
   padding: 3rem 2rem 1.5rem;
-  background-color: var(--surface);
+  background-color: var(--brown) !important;
   margin-top: 1rem;
   margin-bottom: 15px;
   width: 100%;
@@ -28,7 +37,7 @@
 .footer-title {
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--primary);
+  color: var(--white) !important;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   margin: 0;
@@ -42,7 +51,7 @@
 }
 
 .footer-link:hover {
-  color: var(--primary-accent);
+  color: var(--white) !important;
 }
 
 .footer-bottom {
@@ -62,13 +71,13 @@
   font-family: 'Georgia', serif;
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--primary);
+  color: var(--white) !important;
   margin: 0;
 }
 
 .brand-tagline {
   font-size: 10px;
-  color: rgba(85, 107, 88, 0.5);
+  color: var(--text-light) !important;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   margin-top: 0.25rem;

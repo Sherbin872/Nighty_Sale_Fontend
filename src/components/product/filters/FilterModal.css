@@ -1,3 +1,12 @@
+:root {
+   --brown: #550000;
+  --text-main: #550000;
+  --text-light: #424242;
+  --white: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --pink:#fdfaf5;
+}
+
 .filter-modal-overlay {
   position: fixed;
   top: 0;
@@ -98,14 +107,14 @@
 }
 
 .category-chip:hover {
-  border-color: #A3D48F;
+  border-color: var(--brown);
   background: #f0f9ed;
 }
 
 .category-chip.active {
-  background: #A3D48F;
+  background: var(--brown);
   color: white;
-  border-color: #A3D48F;
+  border-color: var(--brown);
 }
 
 /* Price Range Inputs */
@@ -136,7 +145,7 @@
 
 .price-input-group input:focus {
   outline: none;
-  border-color: #A3D48F;
+  border-color: var(--brown);
 }
 
 /* Quick Price Options */
@@ -158,7 +167,8 @@
 }
 
 .quick-price-btn:hover {
-  background: #e8f5e9;
+  color: var(--brown) !important;
+  background: #f5e8e8;
   transform: translateY(-2px);
 }
 
@@ -175,11 +185,11 @@
   width: 20px;
   height: 20px;
   cursor: pointer;
-  accent-color: #A3D48F;
+  accent-color: var(--brown);
 }
 
 .stock-checkbox span {
-  color: #2D412F;
+  color: var(--brown);
   font-size: 1rem;
 }
 
@@ -201,7 +211,7 @@
   background: #f5f5f5;
   border: none;
   border-radius: 12px;
-  color: #556B58;
+  color: var(--brown);
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
@@ -215,7 +225,7 @@
 .apply-filters-btn {
   flex: 2;
   padding: 1rem;
-  background: #A3D48F;
+  background: var(--brown);
   border: none;
   border-radius: 12px;
   color: white;
@@ -226,7 +236,7 @@
 }
 
 .apply-filters-btn:hover {
-  background: #8BCB78;
+  background: var(--brown);
 }
 
 /* Animations */
