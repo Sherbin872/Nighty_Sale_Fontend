@@ -439,7 +439,8 @@ const ProductDetails = () => {
               </div> */}
             </div>
 
-            {/* Price */}
+            
+           {/* Price */}
             <div className="product-price-section">
               <div className="current-price">
                 <span className="price">{formatPrice(product.price)}</span>
@@ -447,10 +448,16 @@ const ProductDetails = () => {
               </div>
 
               {/* Original price if on sale */}
-              {/* <div className="original-price">
-                <span className="strike">₹3,999</span>
-                <span className="discount">25% OFF</span>
-              </div> */}
+              {product.mrp > product.price && (
+                <div className="ooriginal-price">
+                  <span className="strike" style={{ textDecoration: 'line-through', color: '#9ca3af', marginRight: '8px' }}>
+                    {formatPrice(product.mrp)}
+                  </span>
+                  <p className="discount" style={{ textDecoration: 'none', color: '#ffffff', fontWeight: 'bold' }}>
+                    {product.discountPercentage || Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Description */}
@@ -542,7 +549,7 @@ const ProductDetails = () => {
             <div className="product-actions">
               <div className="quantity-selector">
                 <button
-                  className="quantity-btn minus"
+                  className="quuantity-btn minus"
                   onClick={() => handleQuantityChange(-1)}
                   disabled={quantity <= 1 || availableStock === 0}
                 >
@@ -563,7 +570,7 @@ const ProductDetails = () => {
                   disabled={availableStock === 0}
                 />
                 <button
-                  className="quantity-btn plus"
+                  className="quuantity-btn plus"
                   onClick={() => handleQuantityChange(1)}
                   disabled={quantity >= availableStock || availableStock === 0}
                 >

@@ -29,6 +29,7 @@ const AddEditProduct = () => {
   const [formData, setFormData] = useState({
     name: "",
     price: 0,
+    mrp: 0,
     description: "",
     brand: "",
     category: "",
@@ -66,6 +67,7 @@ const AddEditProduct = () => {
       setFormData({
         name: product.name || "",
         price: product.price || 0,
+        mrp: product.mrp || 0,
         description: product.description || "",
         brand: product.brand || "",
         category: product.category || "",
@@ -423,6 +425,7 @@ const AddEditProduct = () => {
     const errors = [];
     if (!formData.name.trim()) errors.push("Product name is required");
     if (formData.price <= 0) errors.push("Price must be greater than 0");
+    if (formData.mrp > 0 && formData.mrp < formData.price) errors.push("MRP cannot be lower than the selling price");
     if (!formData.image.original)
       errors.push("Please upload at least one product image");
     if (!formData.brand.trim()) errors.push("Brand is required");
@@ -438,6 +441,7 @@ const AddEditProduct = () => {
     const productData = {
       name: formData.name.trim(),
       price: parseFloat(formData.price),
+      mrp: parseFloat(formData.mrp) || 0,
       description: formData.description.trim(),
       brand: formData.brand.trim(),
       category: formData.category.trim(),
@@ -593,11 +597,11 @@ const AddEditProduct = () => {
               />
             </div>
 
-            {/* Price & Stock Row */}
+            {/* Price, MRP & Stock Row */}
             <div className="ns-product-form-row">
               <div className="ns-product-form-group">
                 <label>
-                  Price (₹) <span className="req">*</span>
+                  Selling Price (₹) <span className="req">*</span>
                 </label>
                 <input
                   type="number"
@@ -611,6 +615,24 @@ const AddEditProduct = () => {
                   required
                 />
               </div>
+
+              {/* NEW MRP FIELD */}
+              <div className="ns-product-form-group">
+                <label>
+                  MRP (₹) <span className="req-optional">(Original Price)</span>
+                </label>
+                <input
+                  type="number"
+                  name="mrp"
+                  value={formData.mrp}
+                  onChange={handleChange}
+                  min="0"
+                  step="0.01"
+                  placeholder="e.g., 1999"
+                  className="ns-product-form-input"
+                />
+              </div>
+
               <div className="ns-product-form-group">
                 <label>
                   Stock Quantity <span className="req">*</span>
