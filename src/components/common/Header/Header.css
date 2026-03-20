@@ -46,6 +46,9 @@
 .mobile_logo {
   display: none !important;
 }
+.mainLogo{
+  height: 40px !important;
+}
 /* Logo */
 .logo img {
   /* height: 50px; */
@@ -492,7 +495,7 @@
   }
   .mainLogo {
     /* display: none !important; */
-    height: 60px !important;
+    height: 30px !important;
   }
   /* .mobile_logo{
     display: flex !important;

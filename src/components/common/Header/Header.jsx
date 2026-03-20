@@ -105,8 +105,8 @@ const Header = () => {
             </h1> */}
             <img
               className="mainLogo"
-              height={95}
-              src="../../../assets/images/manavaatti-logo.png"
+              height={40}
+              src="https://res.cloudinary.com/diclfmeg4/image/upload/v1773988736/manavaatti-logo_evv92c.png"
               alt=""
             />
           </Link>
