@@ -5,3 +5,9 @@
   padding: 2rem;
   text-align: center;
 }
+@font-face {
+  font-family: "MonotypeCorsiva";
+  src: url("./assets/fonts/MonotypeCorsivaRegular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}

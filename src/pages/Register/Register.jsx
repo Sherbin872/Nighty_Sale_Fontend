@@ -1,205 +1,246 @@
-// src/pages/Register/Register.jsx
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import Input from '../../components/common/Input/Input';
-import Button from '../../components/common/Button/Button';
-import Alert from '../../components/common/Alert/Alert';
-import './Register.css';
+import { Link, useNavigate } from 'react-router-dom';
+import { auth } from '../../firebase'; // Make sure this path is correct!
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import './Register.css'; // Assuming you have standard CSS
 
 const Register = () => {
+  const navigate = useNavigate();
+
+  // Basic Form State
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    confirmPassword: '',
     phone: '',
   });
-  
-  const [errors, setErrors] = useState({});
-  
-  const { register, loading, error, success, resetError } = useAuth();
 
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
-    }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
-    }
-    
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-    
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-    
-    if (formData.phone && !/^\d{10}$/.test(formData.phone)) {
-      newErrors.phone = 'Phone number must be 10 digits';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  // Phone Auth Specific States
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ type: '', text: '' }); // For success/error alerts
 
+  // Firebase Confirmation Object
+  const [confirmationResult, setConfirmationResult] = useState(null);
+
+  // ==========================================
+  // 1. INITIALIZE RECAPTCHA ONCE
+  // ==========================================
+  useEffect(() => {
+    // This ensures reCAPTCHA is only created once and prevents the "already rendered" error
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'invisible',
+        callback: (response) => {
+          // reCAPTCHA solved automatically
+        }
+      });
+    }
+
+    // Cleanup function when component unmounts
+    return () => {
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = null;
+      }
+    };
+  }, []);
+
+  // Handle standard input changes
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    
+    // If they change the phone number after verifying, reset verification
+    if (e.target.name === 'phone' && isPhoneVerified) {
+      setIsPhoneVerified(false);
+      setOtpSent(false);
     }
   };
 
+  // ==========================================
+  // 2. SEND OTP
+  // ==========================================
+  const handleSendOtp = async () => {
+    setMessage({ type: '', text: '' });
+
+    if (formData.phone.length !== 10) {
+      setMessage({ type: 'error', text: 'Please enter a valid 10-digit phone number.' });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const phoneNumberWithCode = `+91${formData.phone}`; // Add India country code
+      const appVerifier = window.recaptchaVerifier;
+
+      const confirmation = await signInWithPhoneNumber(auth, phoneNumberWithCode, appVerifier);
+      setConfirmationResult(confirmation);
+      setOtpSent(true);
+      setMessage({ type: 'success', text: 'OTP sent successfully!' });
+
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      setMessage({ type: 'error', text: error.message || 'Failed to send OTP. Try again.' });
+      
+      // Reset reCAPTCHA so the user can try again
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.render().then(function(widgetId) {
+          window.grecaptcha.reset(widgetId);
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ==========================================
+  // 3. VERIFY OTP
+  // ==========================================
+  const handleVerifyOtp = async () => {
+    setMessage({ type: '', text: '' });
+
+    if (otp.length !== 6) {
+      setMessage({ type: 'error', text: 'Please enter the 6-digit OTP.' });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await confirmationResult.confirm(otp);
+      setIsPhoneVerified(true);
+      setOtpSent(false); // Hide OTP input
+      setMessage({ type: 'success', text: 'Phone number verified successfully! ✓' });
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+      setMessage({ type: 'error', text: 'Invalid OTP. Please check and try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ==========================================
+  // 4. FINAL FORM SUBMIT
+  // ==========================================
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (validateForm()) {
-      // Remove confirmPassword before sending to API
-      const { confirmPassword, ...userData } = formData;
-      await register(userData);
+    if (!isPhoneVerified) {
+      setMessage({ type: 'error', text: 'You must verify your phone number first.' });
+      return;
     }
+
+    // HERE: Call your actual backend API to save the user to MongoDB
+    console.log("Submitting User Data to Backend:", formData);
+    setMessage({ type: 'success', text: 'Account created successfully! Redirecting...' });
+    
+    // setTimeout(() => navigate('/login'), 2000);
   };
 
-  useEffect(() => {
-    return () => resetError();
-  }, [resetError]);
-
   return (
-    <div className="register-page">
-      <div className="register-container">
-        <div className="register-header">
-          <h1>Create Account</h1>
-          <p>Join Nighty Sale and start shopping</p>
+    <div className="register-page" style={{ maxWidth: '500px', margin: '0 auto', padding: '20px' }}>
+      <h2>Create Account</h2>
+      
+      {/* Alert Messages */}
+      {message.text && (
+        <div style={{ 
+          padding: '10px', 
+          marginBottom: '15px', 
+          borderRadius: '5px',
+          backgroundColor: message.type === 'error' ? '#fee2e2' : '#dcfce7',
+          color: message.type === 'error' ? '#991b1b' : '#166534'
+        }}>
+          {message.text}
+        </div>
+      )}
+
+      {/* FIREBASE RECAPTCHA CONTAINER (Invisible) */}
+      <div id="recaptcha-container"></div>
+
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+        
+        {/* Standard Fields */}
+        <div>
+          <label>Full Name</label>
+          <input type="text" name="name" value={formData.name} onChange={handleChange} required style={{ width: '100%', padding: '8px' }} />
         </div>
 
-        {error && (
-          <Alert
-            type="error"
-            message={error}
-            onClose={resetError}
-            autoClose={true}
-          />
-        )}
-
-        {success && (
-          <Alert
-            type="success"
-            message="Registration successful! Redirecting..."
-            autoClose={true}
-          />
-        )}
-
-        <form onSubmit={handleSubmit} className="register-form">
-          <Input
-            label="Full Name"
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Enter your full name"
-            error={errors.name}
-            required
-          />
-
-          <Input
-            label="Email"
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter your email"
-            error={errors.email}
-            required
-          />
-
-          <div className="form-row">
-            <div className="form-col">
-              <Input
-                label="Password"
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Create password"
-                error={errors.password}
-                required
-              />
-            </div>
-            <div className="form-col">
-              <Input
-                label="Confirm Password"
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="Confirm password"
-                error={errors.confirmPassword}
-                required
-              />
-            </div>
-          </div>
-
-          <Input
-            label="Phone Number"
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder="Enter your phone number"
-            error={errors.phone}
-          />
-
-          <div className="terms-agreement">
-            <label className="checkbox-label">
-              <input type="checkbox" required />
-              <span>
-                I agree to the{' '}
-                <Link to="/terms" className="link">
-                  Terms & Conditions
-                </Link>{' '}
-                and{' '}
-                <Link to="/privacy" className="link">
-                  Privacy Policy
-                </Link>
-              </span>
-            </label>
-          </div>
-
-          <Button
-            type="submit"
-            variant="primary"
-            size="large"
-            fullWidth
-            loading={loading}
-            disabled={loading}
-          >
-            Create Account
-          </Button>
-        </form>
-
-        <div className="register-footer">
-          <p>
-            Already have an account?{' '}
-            <Link to="/login" className="link">
-              Sign in
-            </Link>
-          </p>
+        <div>
+          <label>Email</label>
+          <input type="email" name="email" value={formData.email} onChange={handleChange} required style={{ width: '100%', padding: '8px' }} />
         </div>
-      </div>
+
+        <div>
+          <label>Password</label>
+          <input type="password" name="password" value={formData.password} onChange={handleChange} required style={{ width: '100%', padding: '8px' }} />
+        </div>
+
+        {/* Phone Verification Section */}
+        <div style={{ border: '1px solid #ccc', padding: '15px', borderRadius: '8px', backgroundColor: '#f9fafb' }}>
+          <label>Phone Number</label>
+          <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
+            <span style={{ padding: '8px', backgroundColor: '#e5e7eb', borderRadius: '4px' }}>+91</span>
+            <input 
+              type="tel" 
+              name="phone" 
+              value={formData.phone} 
+              onChange={handleChange} 
+              placeholder="10-digit number"
+              disabled={isPhoneVerified}
+              style={{ flex: 1, padding: '8px' }}
+              maxLength="10"
+            />
+            
+            {!isPhoneVerified && !otpSent && (
+              <button type="button" onClick={handleSendOtp} disabled={loading} style={{ padding: '8px 15px', cursor: 'pointer' }}>
+                {loading ? 'Sending...' : 'Send OTP'}
+              </button>
+            )}
+          </div>
+
+          {/* OTP Entry Field (Only shows after OTP is sent) */}
+          {otpSent && !isPhoneVerified && (
+            <div style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
+              <input 
+                type="text" 
+                value={otp} 
+                onChange={(e) => setOtp(e.target.value)} 
+                placeholder="Enter 6-digit OTP"
+                maxLength="6"
+                style={{ flex: 1, padding: '8px' }}
+              />
+              <button type="button" onClick={handleVerifyOtp} disabled={loading} style={{ padding: '8px 15px', cursor: 'pointer', backgroundColor: '#2563eb', color: 'white', border: 'none' }}>
+                {loading ? 'Verifying...' : 'Verify'}
+              </button>
+            </div>
+          )}
+
+          {/* Success Badge */}
+          {isPhoneVerified && (
+            <div style={{ marginTop: '10px', color: '#16a34a', fontWeight: 'bold' }}>
+              ✓ Phone Number Verified
+            </div>
+          )}
+        </div>
+
+        {/* Final Submit Button */}
+        <button 
+          type="submit" 
+          disabled={!isPhoneVerified || loading}
+          style={{ 
+            padding: '12px', 
+            backgroundColor: isPhoneVerified ? '#10b981' : '#9ca3af', 
+            color: 'white', 
+            border: 'none', 
+            borderRadius: '5px',
+            cursor: isPhoneVerified ? 'pointer' : 'not-allowed',
+            marginTop: '10px'
+          }}
+        >
+          Complete Registration
+        </button>
+
+      </form>
     </div>
   );
 };

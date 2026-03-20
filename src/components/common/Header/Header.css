@@ -63,12 +63,12 @@
 }
 
 .logo-text {
-  font-size: 2.3rem;
   font-weight: 700;
   color: #f2b601;
   margin: 0;
   transition: color 0.3s ease;
 }
+
 
 .logo-subtitle {
   font-size: 0.8rem;

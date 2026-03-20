@@ -94,15 +94,21 @@ const Header = () => {
         <div className="logo">
           <Link to="/" onClick={closeMobileMenu}>
            
-            <h1
-              className="logo-text"
+            {/* <h1
+              className="logo-text logo-fontstyle"
               style={{
                 fontFamily: "Monotype Corsiva, Times, Serif",
                 height: "46px",
               }}
             >
               Manavaatti
-            </h1>
+            </h1> */}
+            <img
+              className="mainLogo"
+              height={95}
+              src="../../../assets/images/manavaatti-logo.png"
+              alt=""
+            />
           </Link>
         </div>
 
