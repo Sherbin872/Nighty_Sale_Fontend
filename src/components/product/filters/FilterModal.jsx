@@ -62,7 +62,7 @@ const FilterModal = ({
             <h3 className="filter-section-title">Price Range</h3>
             <div className="price-range-inputs">
               <div className="price-input-group">
-                <label htmlFor="min-price">Min ($)</label>
+                <label htmlFor="min-price">Min (₹)</label>
                 <input
                   id="min-price"
                   type="number"
@@ -74,7 +74,7 @@ const FilterModal = ({
                 />
               </div>
               <div className="price-input-group">
-                <label htmlFor="max-price">Max ($)</label>
+                <label htmlFor="max-price">Max (₹)</label>
                 <input
                   id="max-price"
                   type="number"
@@ -92,25 +92,25 @@ const FilterModal = ({
           <div className="filter-section">
             <h3 className="filter-section-title">Quick Price</h3>
             <div className="quick-price-options">
-              {["Under $25", "$25 - $50", "$50 - $100", "Over $100"].map((range) => (
+              {["Under ₹25", "₹25 - ₹50", "₹50 - ₹100", "Over ₹100"].map((range) => (
                 <button
                   key={range}
                   className="quick-price-btn"
                   onClick={() => {
                     switch(range) {
-                      case "Under $25":
+                      case "Under ₹25":
                         onFilterChange("minPrice", "");
                         onFilterChange("maxPrice", "25");
                         break;
-                      case "$25 - $50":
+                      case "₹25 - ₹50":
                         onFilterChange("minPrice", "25");
                         onFilterChange("maxPrice", "50");
                         break;
-                      case "$50 - $100":
+                      case "₹50 - ₹100":
                         onFilterChange("minPrice", "50");
                         onFilterChange("maxPrice", "100");
                         break;
-                      case "Over $100":
+                      case "Over ₹100":
                         onFilterChange("minPrice", "100");
                         onFilterChange("maxPrice", "");
                         break;

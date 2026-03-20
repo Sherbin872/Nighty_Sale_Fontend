@@ -22,7 +22,7 @@ const Footer = () => {
         
         <div className="footer-bottom">
           <div className="footer-brand">
-            <h3 className="brand-name">Nighty Sale</h3>
+            <h3 className="brand-name">Manavaatti</h3>
             <span className="brand-tagline">Timeless Comfort</span>
           </div>
           <div className="social-links">
@@ -31,7 +31,7 @@ const Footer = () => {
           </div>
         </div>
         
-        <p className="footer-copyright">© 2024 Nighty Sale. Theme #A3D48F.</p>
+        <p className="footer-copyright">© 2026 Manavaatti. Theme #A3D48F.</p>
       </footer>
   );
 };
