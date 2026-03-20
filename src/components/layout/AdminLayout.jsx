@@ -72,7 +72,7 @@ const AdminLayout = () => {
       {/* Admin Sidebar */}
       <aside className={`admin-layout__sidebar ${isSidebarOpen ? 'admin-layout__sidebar--open' : ''}`}>
         <div className="admin-layout__logo-container">
-          <h2 className="admin-layout__logo">Nighty Sale</h2>
+          <h2 className="admin-layout__logo">Manavaatti</h2>
           <span className="admin-layout__badge">Admin Panel</span>
         </div>
         

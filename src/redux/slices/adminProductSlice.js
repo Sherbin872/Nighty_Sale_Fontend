@@ -1,7 +1,7 @@
 // src/redux/slices/adminProductSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { productApi } from "../../api/productApi";
-
+import axiosInstance from '../../api/axiosConfig';
 // Async thunks
 export const fetchProducts = createAsyncThunk(
   "adminProducts/fetchProducts",
@@ -57,6 +57,19 @@ export const deleteProduct = createAsyncThunk(
       );
     }
   },
+);
+
+// Add this if you don't have it already!
+export const fetchProductById = createAsyncThunk(
+  'adminProducts/fetchById',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/products/${id}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message || 'Failed to fetch product');
+    }
+  }
 );
 
 export const uploadProductImages = createAsyncThunk(
@@ -183,6 +196,19 @@ const adminProductSlice = createSlice({
         // You might want to store uploaded images temporarily
       })
       .addCase(uploadProductImages.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // ADD THESE CASES inside your extraReducers
+      .addCase(fetchProductById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchProductById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.product = action.payload; // <--- This is where the magic happens!
+      })
+      .addCase(fetchProductById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

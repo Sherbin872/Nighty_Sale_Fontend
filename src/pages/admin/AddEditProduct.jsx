@@ -6,6 +6,7 @@ import {
   updateProduct,
   uploadProductImages,
   clearProductState,
+  fetchProductById,
 } from "../../redux/slices/adminProductSlice";
 import Alert from "../../components/common/Alert/Alert";
 import Loader from "../../components/common/Loader";
@@ -23,7 +24,17 @@ const AddEditProduct = () => {
   );
   const { user } = useSelector((state) => state.auth);
 
-
+// === NEW EFFECT: Fetch data when page loads ===
+  useEffect(() => {
+    if (isEditMode) {
+      // If we are editing, grab the data for this specific ID!
+      dispatch(fetchProductById(id));
+    } else {
+      // If we are adding a new product, make sure the form is blank
+      dispatch(clearProductState());
+    }
+  }, [dispatch, id, isEditMode]);
+  // =====
 
   // Form state
   const [formData, setFormData] = useState({
