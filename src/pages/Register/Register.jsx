@@ -1,45 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth } from '../../firebase'; // Make sure this path is correct!
+import { useAuth } from '../../hooks/useAuth';
+import Input from '../../components/common/Input/Input';
+import Button from '../../components/common/Button/Button';
+import Alert from '../../components/common/Alert/Alert';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// FIREBASE IMPORTS
+import { auth } from '../../firebase'; 
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
-import './Register.css'; // Assuming you have standard CSS
+import axiosInstance from '../../api/axiosConfig';
+
+import './Register.css';
 
 const Register = () => {
   const navigate = useNavigate();
-
-  // Basic Form State
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
     phone: '',
   });
-
-  // Phone Auth Specific States
-  const [otp, setOtp] = useState('');
-  const [otpSent, setOtpSent] = useState(false);
+  
+  const [errors, setErrors] = useState({});
+  const [localError, setLocalError] = useState(''); // NEW: Replaces the error toast
+  const [isProcessing, setIsProcessing] = useState(false); // Handles all button loading states
+  
+  // --- PHONE OTP STATES (Firebase) ---
+  const [isPhoneVerifying, setIsPhoneVerifying] = useState(false);
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' }); // For success/error alerts
-
-  // Firebase Confirmation Object
+  const [phoneOtp, setPhoneOtp] = useState('');
   const [confirmationResult, setConfirmationResult] = useState(null);
+
+  // --- EMAIL OTP STATES (Backend) ---
+  const [isEmailVerifying, setIsEmailVerifying] = useState(false);
+  const [emailOtp, setEmailOtp] = useState('');
+  
+  const { register, loading, error, success, resetError } = useAuth();
 
   // ==========================================
   // 1. INITIALIZE RECAPTCHA ONCE
   // ==========================================
   useEffect(() => {
-    // This ensures reCAPTCHA is only created once and prevents the "already rendered" error
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
         size: 'invisible',
-        callback: (response) => {
-          // reCAPTCHA solved automatically
-        }
+        callback: (response) => {}
       });
     }
 
-    // Cleanup function when component unmounts
     return () => {
       if (window.recaptchaVerifier) {
         window.recaptchaVerifier.clear();
@@ -48,199 +60,416 @@ const Register = () => {
     };
   }, []);
 
-  // Handle standard input changes
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const validateForm = () => {
+    const newErrors = {};
+    setLocalError(''); // Clear local errors on new validation
     
-    // If they change the phone number after verifying, reset verification
-    if (e.target.name === 'phone' && isPhoneVerified) {
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email is invalid';
+    }
+    
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+    
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password';
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+    
+    if (!formData.phone || !/^\d{10}$/.test(formData.phone)) {
+      newErrors.phone = 'Phone number must be 10 digits';
+    } else if (!isPhoneVerified) {
+      newErrors.phone = 'Please verify your phone number first';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+    if (localError) setLocalError('');
+
+    if (name === 'phone' && isPhoneVerified) {
       setIsPhoneVerified(false);
-      setOtpSent(false);
     }
   };
 
   // ==========================================
-  // 2. SEND OTP
+  // FIREBASE PHONE OTP HANDLERS
   // ==========================================
-  const handleSendOtp = async () => {
-    setMessage({ type: '', text: '' });
-
-    if (formData.phone.length !== 10) {
-      setMessage({ type: 'error', text: 'Please enter a valid 10-digit phone number.' });
+  const handleSendPhoneOtp = async () => {
+    setLocalError('');
+    if (!/^\d{10}$/.test(formData.phone)) {
+      setErrors(prev => ({ ...prev, phone: 'Enter a valid 10-digit phone number' }));
       return;
     }
-
-    setLoading(true);
+    
+    setIsProcessing(true);
     try {
-      const phoneNumberWithCode = `+91${formData.phone}`; // Add India country code
+      setIsPhoneVerifying(true);
+      
       const appVerifier = window.recaptchaVerifier;
-
+      const phoneNumberWithCode = `+91${formData.phone}`; 
+      
       const confirmation = await signInWithPhoneNumber(auth, phoneNumberWithCode, appVerifier);
       setConfirmationResult(confirmation);
-      setOtpSent(true);
-      setMessage({ type: 'success', text: 'OTP sent successfully!' });
-
-    } catch (error) {
-      console.error("Error sending OTP:", error);
-      setMessage({ type: 'error', text: error.message || 'Failed to send OTP. Try again.' });
       
-      // Reset reCAPTCHA so the user can try again
+      toast.success(`OTP sent to ${formData.phone}`);
+    } catch (err) {
+      console.error("Firebase Error:", err);
+      setIsPhoneVerifying(false);
+      
+      if (err.code === 'auth/billing-not-enabled') {
+        setLocalError("Firebase SMS billing not enabled. Use a test number.");
+      } else {
+        setLocalError(err.message || "Failed to send Phone OTP");
+      }
+      
       if (window.recaptchaVerifier) {
         window.recaptchaVerifier.render().then(function(widgetId) {
           window.grecaptcha.reset(widgetId);
         });
       }
     } finally {
-      setLoading(false);
+      setIsProcessing(false);
     }
   };
 
-  // ==========================================
-  // 3. VERIFY OTP
-  // ==========================================
-  const handleVerifyOtp = async () => {
-    setMessage({ type: '', text: '' });
-
-    if (otp.length !== 6) {
-      setMessage({ type: 'error', text: 'Please enter the 6-digit OTP.' });
+  const handleVerifyPhoneOtp = async () => {
+    setLocalError('');
+    if (phoneOtp.length < 6) { 
+      setErrors(prev => ({ ...prev, phoneOtp: 'Please enter a valid 6-digit OTP' }));
       return;
     }
-
-    setLoading(true);
+    
+    setIsProcessing(true);
     try {
-      await confirmationResult.confirm(otp);
+      await confirmationResult.confirm(phoneOtp);
+      
       setIsPhoneVerified(true);
-      setOtpSent(false); // Hide OTP input
-      setMessage({ type: 'success', text: 'Phone number verified successfully! ✓' });
-    } catch (error) {
-      console.error("Error verifying OTP:", error);
-      setMessage({ type: 'error', text: 'Invalid OTP. Please check and try again.' });
+      setIsPhoneVerifying(false);
+      setErrors(prev => ({ ...prev, phone: '', phoneOtp: '' }));
+      toast.success("Phone verified successfully!");
+      
+    } catch (err) {
+      console.error("OTP Verification Error:", err);
+      setLocalError('Invalid OTP. Please check and try again.');
+      setErrors(prev => ({ ...prev, phoneOtp: 'Invalid OTP' }));
     } finally {
-      setLoading(false);
+      setIsProcessing(false);
     }
   };
 
   // ==========================================
-  // 4. FINAL FORM SUBMIT
+  // BACKEND EMAIL OTP & SUBMIT HANDLERS
   // ==========================================
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isPhoneVerified) {
-      setMessage({ type: 'error', text: 'You must verify your phone number first.' });
+    setLocalError('');
+    
+    if (validateForm()) {
+      setIsProcessing(true); 
+      try {
+        await axiosInstance.post('/users/send-email-otp', { 
+          email: formData.email, 
+          name: formData.name 
+        });
+        
+        setIsEmailVerifying(true);
+        toast.success(`Verification code sent to ${formData.email}`);
+      } catch (err) {
+        console.error("Error sending Email OTP:", err);
+        const errorMessage = err.response?.data?.message || "";
+        
+        // Friendly duplicate email check sent to the Alert Box
+        if (errorMessage.includes("already exists") || errorMessage.toLowerCase().includes("duplicate")) {
+          setLocalError("👋 This email is already registered. Please go to Sign In!");
+        } else {
+          setLocalError(errorMessage || "Failed to send verification email");
+        }
+      } finally {
+        setIsProcessing(false);
+      }
+    }
+  };
+
+  const handleCompleteRegistration = async (e) => {
+    e.preventDefault();
+    setLocalError('');
+    
+    if (!emailOtp) {
+      setLocalError("Please enter the email verification code");
       return;
     }
 
-    // HERE: Call your actual backend API to save the user to MongoDB
-    console.log("Submitting User Data to Backend:", formData);
-    setMessage({ type: 'success', text: 'Account created successfully! Redirecting...' });
-    
-    // setTimeout(() => navigate('/login'), 2000);
+    setIsProcessing(true);
+    try {
+      await axiosInstance.post('/users/verify-email-otp', { email: formData.email, otp: emailOtp });
+      
+      const { confirmPassword, ...userData } = formData;
+      await register(userData);
+      
+    } catch (err) {
+      setLocalError(err.response?.data?.message || "Invalid Email OTP");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  return (
-    <div className="register-page" style={{ maxWidth: '500px', margin: '0 auto', padding: '20px' }}>
-      <h2>Create Account</h2>
-      
-      {/* Alert Messages */}
-      {message.text && (
-        <div style={{ 
-          padding: '10px', 
-          marginBottom: '15px', 
-          borderRadius: '5px',
-          backgroundColor: message.type === 'error' ? '#fee2e2' : '#dcfce7',
-          color: message.type === 'error' ? '#991b1b' : '#166534'
-        }}>
-          {message.text}
-        </div>
-      )}
+  // Clear errors when unmounting
+  useEffect(() => {
+    return () => resetError();
+  }, [resetError]);
 
-      {/* FIREBASE RECAPTCHA CONTAINER (Invisible) */}
-      <div id="recaptcha-container"></div>
+  // ==========================================
+  // RENDER: EMAIL OTP SCREEN
+  // ==========================================
+  if (isEmailVerifying) {
+    return (
+      <div className="register-page">
+        <div className="register-container">
+          <div className="register-header">
+            <h1>Verify Email</h1>
+            <p>We've sent a code to <strong>{formData.email}</strong></p>
+          </div>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        
-        {/* Standard Fields */}
-        <div>
-          <label>Full Name</label>
-          <input type="text" name="name" value={formData.name} onChange={handleChange} required style={{ width: '100%', padding: '8px' }} />
-        </div>
+          {/* COMBINED ERROR ALERT */}
+          {(localError || error) && (
+            <Alert 
+              type="error" 
+              message={localError || error} 
+              onClose={() => { setLocalError(''); resetError(); }} 
+            />
+          )}
 
-        <div>
-          <label>Email</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} required style={{ width: '100%', padding: '8px' }} />
-        </div>
-
-        <div>
-          <label>Password</label>
-          <input type="password" name="password" value={formData.password} onChange={handleChange} required style={{ width: '100%', padding: '8px' }} />
-        </div>
-
-        {/* Phone Verification Section */}
-        <div style={{ border: '1px solid #ccc', padding: '15px', borderRadius: '8px', backgroundColor: '#f9fafb' }}>
-          <label>Phone Number</label>
-          <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
-            <span style={{ padding: '8px', backgroundColor: '#e5e7eb', borderRadius: '4px' }}>+91</span>
-            <input 
-              type="tel" 
-              name="phone" 
-              value={formData.phone} 
-              onChange={handleChange} 
-              placeholder="10-digit number"
-              disabled={isPhoneVerified}
-              style={{ flex: 1, padding: '8px' }}
-              maxLength="10"
+          <form onSubmit={handleCompleteRegistration} className="register-form">
+            <Input
+              label="Enter Email Verification Code"
+              type="text"
+              value={emailOtp}
+              onChange={(e) => setEmailOtp(e.target.value)}
+              placeholder="e.g. 123456"
+              required
+              disabled={isProcessing || loading}
             />
             
-            {!isPhoneVerified && !otpSent && (
-              <button type="button" onClick={handleSendOtp} disabled={loading} style={{ padding: '8px 15px', cursor: 'pointer' }}>
-                {loading ? 'Sending...' : 'Send OTP'}
+            <Button
+              type="submit"
+              variant="primary"
+              size="large"
+              fullWidth
+              loading={isProcessing || loading}
+              disabled={isProcessing || loading}
+            >
+              {isProcessing || loading ? 'Creating Account...' : 'Complete Registration'}
+            </Button>
+
+            <div style={{ marginTop: '15px', textAlign: 'center' }}>
+              <button 
+                type="button" 
+                onClick={() => { setIsEmailVerifying(false); setLocalError(''); }}
+                style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer', textDecoration: 'underline' }}
+                disabled={isProcessing || loading}
+              >
+                ← Back to Edit Details
               </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  // ==========================================
+  // RENDER: MAIN REGISTRATION FORM
+  // ==========================================
+  return (
+    <div className="register-page">
+      <div className="register-container">
+        <div className="register-header">
+          <h1>Create Account</h1>
+          <p>Join Nighty Sale and start shopping</p>
+        </div>
+
+        {/* COMBINED ERROR ALERT BOX */}
+        {(localError || error) && (
+          <Alert 
+            type="error" 
+            message={localError || error} 
+            onClose={() => { setLocalError(''); resetError(); }} 
+            autoClose={false} 
+          />
+        )}
+        
+        {success && <Alert type="success" message="Registration successful! Redirecting..." autoClose={true} />}
+
+        {/* FIREBASE INVISIBLE RECAPTCHA CONTAINER */}
+        <div id="recaptcha-container"></div>
+
+        <form onSubmit={handleSubmit} className="register-form">
+          <Input
+            label="Full Name"
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Enter your full name"
+            error={errors.name}
+            required
+            disabled={isProcessing || loading}
+          />
+
+          <Input
+            label="Email"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Enter your email"
+            error={errors.email}
+            required
+            disabled={isProcessing || loading}
+          />
+
+          <div className="form-row">
+            <div className="form-col">
+              <Input
+                label="Password"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Create password"
+                error={errors.password}
+                required
+                disabled={isProcessing || loading}
+              />
+            </div>
+            <div className="form-col">
+              <Input
+                label="Confirm Password"
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm password"
+                error={errors.confirmPassword}
+                required
+                disabled={isProcessing || loading}
+              />
+            </div>
+          </div>
+
+          {/* --- PHONE INPUT WITH OTP INLINE --- */}
+          <div className="phone-verification-section" style={{ position: 'relative', marginBottom: '15px' }}>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <div style={{ flex: 1 }}>
+                <Input
+                  label="Phone Number"
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="Enter your phone number"
+                  error={errors.phone}
+                  required
+                  disabled={isPhoneVerified || isProcessing || loading}
+                />
+              </div>
+              
+              {!isPhoneVerified && !isPhoneVerifying && formData.phone.length === 10 && (
+                <div style={{ marginBottom: errors.phone ? '24px' : '0' }}>
+                  <Button 
+                    className="mybtn" 
+                    type="button" 
+                    variant="secondary" 
+                    onClick={handleSendPhoneOtp}
+                    disabled={isProcessing}
+                  >
+                    {isProcessing ? 'Sending...' : 'Verify'}
+                  </Button>
+                </div>
+              )}
+
+              {isPhoneVerified && (
+                <div style={{ color: '#10b981', fontWeight: 'bold' }}>
+                  ✓ Verified
+                </div>
+              )}
+            </div>
+
+            {isPhoneVerifying && !isPhoneVerified && (
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px', padding: '15px', background: '#f8fafc', borderRadius: '8px' }}>
+                <div style={{ flex: 1 }}>
+                  <Input
+                    label="Enter Phone OTP"
+                    type="text"
+                    value={phoneOtp}
+                    onChange={(e) => setPhoneOtp(e.target.value)}
+                    placeholder="Enter 6-digit OTP"
+                    error={errors.phoneOtp}
+                    disabled={isProcessing}
+                  />
+                </div>
+                <div style={{ marginBottom: errors.phoneOtp ? '24px' : '0' }}>
+                  <Button 
+                    type="button" 
+                    variant="primary" 
+                    onClick={handleVerifyPhoneOtp}
+                    disabled={isProcessing}
+                  >
+                    {isProcessing ? 'Verifying...' : 'Confirm'}
+                  </Button>
+                </div>
+              </div>
             )}
           </div>
 
-          {/* OTP Entry Field (Only shows after OTP is sent) */}
-          {otpSent && !isPhoneVerified && (
-            <div style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
-              <input 
-                type="text" 
-                value={otp} 
-                onChange={(e) => setOtp(e.target.value)} 
-                placeholder="Enter 6-digit OTP"
-                maxLength="6"
-                style={{ flex: 1, padding: '8px' }}
-              />
-              <button type="button" onClick={handleVerifyOtp} disabled={loading} style={{ padding: '8px 15px', cursor: 'pointer', backgroundColor: '#2563eb', color: 'white', border: 'none' }}>
-                {loading ? 'Verifying...' : 'Verify'}
-              </button>
-            </div>
-          )}
+          <div className="terms-agreement">
+            <label className="checkbox-label">
+              <input type="checkbox" required disabled={isProcessing || loading} />
+              <span>
+                I agree to the{' '}
+                <Link to="/terms" className="link">Terms & Conditions</Link>{' '}
+                and{' '}
+                <Link to="/privacy" className="link">Privacy Policy</Link>
+              </span>
+            </label>
+          </div>
 
-          {/* Success Badge */}
-          {isPhoneVerified && (
-            <div style={{ marginTop: '10px', color: '#16a34a', fontWeight: 'bold' }}>
-              ✓ Phone Number Verified
-            </div>
-          )}
+          <Button
+            type="submit"
+            variant="primary"
+            size="large"
+            fullWidth
+            loading={isProcessing || loading}
+            disabled={isProcessing || loading}
+          >
+            {isProcessing ? 'Processing...' : 'Send Email Verification'}
+          </Button>
+        </form>
+
+        <div className="register-footer">
+          <p>
+            Already have an account?{' '}
+            <Link to="/login" className="link">Sign in</Link>
+          </p>
         </div>
-
-        {/* Final Submit Button */}
-        <button 
-          type="submit" 
-          disabled={!isPhoneVerified || loading}
-          style={{ 
-            padding: '12px', 
-            backgroundColor: isPhoneVerified ? '#10b981' : '#9ca3af', 
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '5px',
-            cursor: isPhoneVerified ? 'pointer' : 'not-allowed',
-            marginTop: '10px'
-          }}
-        >
-          Complete Registration
-        </button>
-
-      </form>
+      </div>
     </div>
   );
 };
