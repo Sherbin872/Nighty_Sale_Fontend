@@ -302,7 +302,7 @@ const Register = () => {
       <div className="register-container">
         <div className="register-header">
           <h1>Create Account</h1>
-          <p>Join Nighty Sale and start shopping</p>
+          <p>Join Manavaatti and start shopping</p>
         </div>
 
         {/* COMBINED ERROR ALERT BOX */}

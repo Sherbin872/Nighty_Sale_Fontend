@@ -65,7 +65,7 @@ const Login = () => {
       <div className="login-container">
         <div className="login-header">
           <h1>Welcome Back</h1>
-          <p>Sign in to your Nighty Sale account</p>
+          <p>Sign in to your Manavaatti account</p>
         </div>
 
         {/* {console.log(error)} */}
