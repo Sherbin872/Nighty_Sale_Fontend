@@ -22,7 +22,7 @@ const Register = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    phone: '',
+    // phone: '',
   });
   
   const [errors, setErrors] = useState({});
@@ -84,11 +84,11 @@ const Register = () => {
       newErrors.confirmPassword = 'Passwords do not match';
     }
     
-    if (!formData.phone || !/^\d{10}$/.test(formData.phone)) {
-      newErrors.phone = 'Phone number must be 10 digits';
-    } else if (!isPhoneVerified) {
-      newErrors.phone = 'Please verify your phone number first';
-    }
+    // if (!formData.phone || !/^\d{10}$/.test(formData.phone)) {
+    //   newErrors.phone = 'Phone number must be 10 digits';
+    // } else if (!isPhoneVerified) {
+    //   newErrors.phone = 'Please verify your phone number first';
+    // }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -375,7 +375,7 @@ const Register = () => {
           </div>
 
           {/* --- PHONE INPUT WITH OTP INLINE --- */}
-          <div className="phone-verification-section" style={{ position: 'relative', marginBottom: '15px' }}>
+          {/* <div className="phone-verification-section" style={{ position: 'relative', marginBottom: '15px' }}>
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
               <div style={{ flex: 1 }}>
                 <Input
@@ -437,7 +437,7 @@ const Register = () => {
                 </div>
               </div>
             )}
-          </div>
+          </div> */}
 
           <div className="terms-agreement">
             <label className="checkbox-label">

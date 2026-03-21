@@ -280,18 +280,23 @@
 }
 
 /* Skeleton Loading */
+/* Update skeleton-grid to be dynamic like products-grid */
 .skeleton-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin-bottom: 2rem;
+  /* Remove fixed columns, will be set by inline style or class */
 }
 
+/* Make skeleton cards match product cards */
 .skeleton-card {
   background-color: var(--white);
   border-radius: 12px;
   padding: 1.2rem;
   box-shadow: 0 4px 12px var(--shadow);
+  min-height: 380px; /* Add fixed min-height to prevent empty appearance */
+  display: flex;
+  flex-direction: column;
 }
 
 .skeleton-image {
@@ -302,6 +307,7 @@
   animation: loading 1.5s infinite;
   border-radius: 8px;
   margin-bottom: 1rem;
+  flex-shrink: 0;
 }
 
 .skeleton-text {
@@ -313,8 +319,17 @@
   margin-bottom: 0.75rem;
 }
 
+.skeleton-text:last-child {
+  margin-bottom: 0;
+}
+
 .skeleton-text.short {
   width: 60%;
+}
+
+/* Add spacing for better structure */
+.skeleton-card .skeleton-text:first-of-type {
+  margin-top: 0.5rem;
 }
 
 @keyframes loading {
@@ -744,4 +759,48 @@
     width: 100%;
     justify-content: center;
   }
+}
+/* ................................................ */
+
+/* From Uiverse.io by satyamchaudharydev */ 
+.lloader {
+  display: block;
+  --height-of-loader: 4px;
+  --loader-color: #0071e2;
+  width: 130px;
+  height: var(--height-of-loader);
+  border-radius: 30px;
+  background-color: rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.lloader::before {
+  content: "";
+  position: absolute;
+  background: var(--loader-color);
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  border-radius: 30px;
+  animation: moving 1s ease-in-out infinite;
+  ;
+}
+
+@keyframes moving {
+  50% {
+    width: 100%;
+  }
+
+  100% {
+    width: 0;
+    right: 0;
+    left: unset;
+  }
+}
+.load{
+  width: 100% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

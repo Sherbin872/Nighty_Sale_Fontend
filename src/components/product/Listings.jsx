@@ -385,10 +385,9 @@ const Listings = ({
       {hasMore && onLoadMore && (
         <div className="load-more-container">
           {loading ? (
-            <div className="loading-more">
-              <Loader size="small" />
-              <span>Loading more products...</span>
-            </div>
+           <div className="load">
+<div className="lloader"></div>
+</div>
           ) : (
             <button onClick={onLoadMore} className="load-more-btn">
               Load More Products
@@ -398,7 +397,7 @@ const Listings = ({
       )}
 
       {/* Loading Skeleton */}
-      {loading && filteredProducts.length > 0 && (
+      {/* {loading && filteredProducts.length > 0 && (
         <div className="skeleton-grid">
           {[...Array(Math.min(4, gridColumns))].map((_, index) => (
             <div key={`skeleton-${index}`} className="skeleton-card">
@@ -408,7 +407,8 @@ const Listings = ({
             </div>
           ))}
         </div>
-      )}
+
+      )} */}
 
       {/* Filter Modal */}
       <FilterModal
