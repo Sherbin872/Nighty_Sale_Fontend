@@ -9,7 +9,8 @@
 }
 .page-header h1{
 color: var(--brown) !important;
- font-family: "Lugrasimo", cursive;
-  font-weight: 400;
+ font-family: "Fredoka", sans-serif;
+ /* font-family: "Lugrasimo", cursive; */
+  font-weight: 500;
   font-style: normal;
 }
