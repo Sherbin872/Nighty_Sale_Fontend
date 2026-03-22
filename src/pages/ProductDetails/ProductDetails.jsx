@@ -474,7 +474,8 @@ const ProductDetails = () => {
                 ))}
               </div>
 
-              {product.description.length > 200 && (
+              {/* FIX: Check for both character length AND number of lines */}
+              {(product.description.length > 200 || product.description.split('\n').length > 3) && (
                 <button
                   className="see-more-btn"
                   onClick={() => setShowFullDescription(!showFullDescription)}
