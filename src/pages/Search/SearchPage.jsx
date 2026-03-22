@@ -102,10 +102,73 @@ const SearchPage = () => {
       {/* 2. Direct Results Grid */}
       <div className="search-results-container" style={{ padding: '20px' }}>
         
-        {!hasSearched && !loading && (
-          <div style={{ textAlign: 'center', marginTop: '50px', color: '#666' }}>
-            <h2>What are you looking for?</h2>
-            <p>Type above to instantly search our inventory.</p>
+      {!hasSearched && !loading && (
+          <div style={{ 
+            textAlign: 'center', 
+            marginTop: '60px', 
+            padding: '40px 20px',
+            backgroundColor: '#f9fafb',
+            borderRadius: '16px',
+            maxWidth: '600px',
+            margin: '60px auto 0'
+          }}>
+            {/* Decorative Icon */}
+            <div style={{ 
+              width: '80px', 
+              height: '80px', 
+              backgroundColor: '#b116165e', 
+              borderRadius: '50%', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              margin: '0 auto 20px',
+              color: '#550000'
+            }}>
+              <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+
+            <h2 style={{ fontSize: '24px', color: '#1f2937', marginBottom: '10px', fontWeight: '600' }}>
+              What are you looking for?
+            </h2>
+            <p style={{ color: '#6b7280', fontSize: '16px', marginBottom: '30px' }}>
+              Type above to instantly search our inventory, or try one of these popular categories:
+            </p>
+
+            {/* Quick Search Pills */}
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              {['Cotton', 'Satin', 'XL', 'Floral'].map((term) => (
+                <button
+                  key={term}
+                  onClick={() => {
+                    setQuery(term);
+                    executeSearch(term, 1);
+                  }}
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: 'white',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '20px',
+                    color: '#374151',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.borderColor = '#550000';
+                    e.target.style.color = '#550000';
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.borderColor = '#e5e7eb';
+                    e.target.style.color = '#374151';
+                  }}
+                >
+                  {term}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
