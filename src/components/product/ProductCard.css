@@ -32,11 +32,11 @@
 
 /* Image Container */
 .product-image-container {
-  border-radius: 55px;
+  border-radius: 10px;
   position: relative;
   aspect-ratio: 1/1.25;
   overflow: hidden;
-  background: #f8f8f8;
+  background: #f8f8f800;
 }
 
 .lazy-image-wrapper {
@@ -164,6 +164,7 @@
   font-size: 0.9rem;
   color: var(--brown) !important;
   /* margin: 0 0 8px; */
+ font-family: "Fredoka", sans-serif;
   margin-bottom: 2px !important;
   /* background-color: #FF6B8B; */
   font-weight: 100 !important;
@@ -176,10 +177,18 @@
   text-overflow: ellipsis;
 
 
+  width: 100%;  
    font-family: "Libre Baskerville", serif;
   font-optical-sizing: auto;
   font-weight: 100;
   font-style: normal;
+
+  
+
+   /* white-space:nowrap;         */
+   text-align: start;
+  overflow: hidden;         
+  text-overflow: ellipsis !important;  
 }
 
 .ccurrent-price {
@@ -193,9 +202,20 @@
   font-family: "Libre Baskerville", serif;
   font-optical-sizing: auto;
   font-weight: 100 !important;
-  font-style: normal;
+  font-style: normal; 
+}
+.pprice-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
+
+.pold-price {
+  text-decoration: line-through;
+  color: #888;
+  font-size: 14px;
+}
 /* Responsive Grid - 4 cards per row */
 @media (min-width: 1200px) {
   .product-card {

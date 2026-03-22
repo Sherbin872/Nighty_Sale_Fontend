@@ -89,11 +89,21 @@ const ProductCard = ({ product }) => {
 
         {/* Product Info */}
         <div className="pproduct-info">
-          <span className="pcproduct-name" title={product.name}>
+          <span className="pcproduct-name elip" title={product.name}>
             {product.name}
           </span>
 
-          <span className="ccurrent-price">{formatPrice(product.price)}</span>
+           <div className="pprice-section">
+    <span className="ccurrent-price">
+      {formatPrice(product.price)}
+    </span>
+
+    {product.mrp && product.mrp > product.price && (
+      <span className="pold-price">
+        {formatPrice(product.mrp)}
+      </span>
+    )}
+  </div>
         </div>
       </Link>
     </div>
