@@ -101,7 +101,7 @@
 
 .footer-copyright {
   font-size: 10px;
-  color: rgba(85, 107, 88, 0.3);
+  color: var(--text-light) !important;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.15em;

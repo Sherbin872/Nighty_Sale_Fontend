@@ -31,7 +31,7 @@ const Footer = () => {
           </div>
         </div>
         
-        <p className="footer-copyright">© 2026 Manavaatti. Theme #A3D48F.</p>
+        <p className="footer-copyright">© 2026 Manavaatti. All rights reserved.</p>
       </footer>
   );
 };
