@@ -20,11 +20,13 @@ export const registerUser = createAsyncThunk(
     try {
       const res = await authApi.register(userData);
 
+      // THE FIX: Add phone and address here
       const user = {
         _id: res._id,
         name: res.name,
         email: res.email,
         role: res.role,
+        address: res.address,   // <-- Added
       };
 
       localStorage.setItem("token", res.token);
@@ -46,11 +48,13 @@ export const loginUser = createAsyncThunk(
     try {
       const res = await authApi.login(credentials);
 
+      // THE FIX: Add phone and address here
       const user = {
         _id: res._id,
         name: res.name,
         email: res.email,
         role: res.role,
+        address: res.address,   // <-- Added
       };
 
       localStorage.setItem("token", res.token);

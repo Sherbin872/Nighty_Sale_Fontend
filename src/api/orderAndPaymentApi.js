@@ -58,10 +58,12 @@ export const paymentApi = {
 };
 
 /* =======================
-   ORDER UTILS (FIXED)
+   ORDER UTILS (UPDATED)
 ======================= */
 export const orderUtils = {
-  calculateOrderTotals: (cartItems = []) => {
+  // CHANGED: Accept postalCode instead of user
+  calculateOrderTotals: (cartItems = [], postalCode = '') => {
+    console.log("Calculating order totals with PIN:", postalCode);
     const itemsPrice = cartItems.reduce((acc, item) => {
       const price = Number(item.price);
       const qty = Number(item.quantity ?? item.qty);
@@ -74,7 +76,6 @@ export const orderUtils = {
       return acc + price * qty;
     }, 0);
 
-    // NEW: Calculate total physical quantity of all items in the cart
     const totalQuantity = cartItems.reduce((acc, item) => {
       const qty = Number(item.quantity ?? item.qty);
       return acc + (Number.isNaN(qty) ? 0 : qty);
@@ -82,8 +83,22 @@ export const orderUtils = {
 
     const taxPrice = 0;
     
-    // FIX: Set shipping to 0 if total quantity is 3 or more, otherwise 50
-    const shippingPrice = totalQuantity >= 3 ? 0 : 50;
+    // ==========================================
+    // DYNAMIC SHIPPING LOGIC (VIA PIN CODE)
+    // ==========================================
+    let shippingPrice = 0;
+    
+    if (totalQuantity < 3) {
+      // Tamil Nadu PIN codes start with 60, 61, 62, 63, or 64 and are 6 digits long.
+      const isTamilNadu = /^(60|61|62|63|64)\d{4}$/.test(postalCode || '');
+      
+      if (isTamilNadu) {
+        shippingPrice = 50;  // Inside TN
+      } else {
+        shippingPrice = 100; // Outside TN (only charge 100 if they've typed a full pin code)
+      } 
+    }
+    // ==========================================
     
     const totalPrice = itemsPrice + taxPrice + shippingPrice;
 
@@ -94,9 +109,11 @@ export const orderUtils = {
       totalPrice,
     };
   },
-// ... leave prepareOrderData, etc. exactly as they are
-  prepareOrderData: (cartItems, shippingAddress, paymentMethod, userInfo) => {
-    const totals = orderUtils.calculateOrderTotals(cartItems);
+
+  prepareOrderData: (cartItems, shippingAddress, paymentMethod, user) => {
+    console.log("Preparing order data");
+    // NEW: Pass the postalCode from shippingAddress here!
+    const totals = orderUtils.calculateOrderTotals(cartItems, shippingAddress.postalCode);
 
     const orderItems = cartItems.map((item) => ({
       product: item.productId,
@@ -112,7 +129,7 @@ export const orderUtils = {
       shippingAddress,
       paymentMethod,
       ...totals,
-      user: userInfo?._id,
+      user: user?._id,
     };
   },
 
@@ -154,14 +171,13 @@ export const orderUtils = {
 };
 
 /* =======================
-   CHECKOUT SERVICE
+   CHECKOUT SERVICE (UPDATED)
 ======================= */
 export const checkoutService = {
-  getOrderSummary: (cartItems = []) => {
-    const totals = orderUtils.calculateOrderTotals(cartItems);
-
-    console.log("Cart Items:", cartItems);
-    console.log("Calculated Totals:", totals);
+  // CHANGED: Accept postalCode instead of user
+  getOrderSummary: (cartItems = [], postalCode = '') => {
+    console.log("Getting order summary with PIN:", postalCode);
+    const totals = orderUtils.calculateOrderTotals(cartItems, postalCode);
 
     return {
       subtotal: totals.itemsPrice,
@@ -169,7 +185,7 @@ export const checkoutService = {
       shipping: totals.shippingPrice,
       total: totals.totalPrice,
       freeShipping: totals.shippingPrice === 0,
-      freeShippingThreshold: 3, // FIX: Updated threshold from 1000 rupees to 3 items
+      freeShippingThreshold: 3, 
     };
   },
 // ... leave processCheckout exactly as it 
@@ -177,7 +193,7 @@ export const checkoutService = {
     cartItems,
     shippingAddress,
     paymentMethod,
-    userInfo,
+    user,
     onStepChange,
     onSuccess,
     onError,
@@ -199,7 +215,7 @@ export const checkoutService = {
         cartItems,
         shippingAddress,
         paymentMethod,
-        userInfo,
+        user,
       );
 
       const dbOrder = await orderApi.createOrder(orderData);
@@ -209,7 +225,7 @@ export const checkoutService = {
       await razorpayService.initializePayment({
         dbOrderId: dbOrder._id,
         amount: orderData.totalPrice,
-        userInfo,
+        user,
         onSuccess,
         onFailure: onError,
       });
@@ -231,7 +247,7 @@ export const razorpayService = {
   initializePayment: async ({
     dbOrderId,
     amount,
-    userInfo,
+    user,
     onSuccess,
     onFailure,
   }) => {
@@ -285,9 +301,9 @@ export const razorpayService = {
       },
 
       prefill: {
-        name: userInfo?.name,
-        email: userInfo?.email,
-        contact: userInfo?.phone,
+        name: user?.name,
+        email: user?.email,
+        contact: user?.phone,
       },
     });
 

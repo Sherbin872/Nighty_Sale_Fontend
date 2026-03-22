@@ -57,6 +57,8 @@ const Cart = () => {
   
   // Redux state
   const cartItems = useSelector((state) => state.cart.items);
+  const { user } = useSelector((state) => state.auth); // NEW: Pull the logged-in user's details
+  console.log('Logged-in user:', user); // Debugging line to check user details
   const [localQuantities, setLocalQuantities] = useState({});
   const [isUpdating, setIsUpdating] = useState({});
   const [promoCode, setPromoCode] = useState('');
@@ -76,29 +78,37 @@ const Cart = () => {
   }, [cartItems]);
 
   // Cart calculations
- const cartTotals = useMemo(() => {
+  const cartTotals = useMemo(() => {
     const subtotal = cartItems.reduce(
       (sum, item) => sum + (item.price * item.quantity),
       0
     );
 
-    // NEW: Calculate the total physical quantity of items in the cart
     const totalQuantity = cartItems.reduce(
       (sum, item) => sum + item.quantity, 
       0
     );
 
-    // Free shipping over $50, else $5.99
-    // const shipping = subtotal > 50 ? 0 : 0;
-    const shipping = totalQuantity >= 3 ? 0 : 50;
+    // ==========================================
+    // NEW: DYNAMIC SHIPPING CALCULATION
+    // ==========================================
+    let shipping = 0;
     
-    // Calculate tax (2% of subtotal based on your example)
+    // Check if total quantity is less than 3 (if 3 or more, shipping is free based on your previous logic)
+    if (totalQuantity < 3) {
+      // Safely check user's state. Make it lowercase and remove spaces for accurate comparison.
+      const userState = user?.address?.state?.toLowerCase().replace(/\s/g, '') || '';
+      
+      if (userState === 'tamilnadu') {
+        shipping = 50; // In-state shipping
+      } else {
+        shipping = 100; // Out-of-state shipping
+      }
+    }
+    // ==========================================
+    
     const tax = 0;
-    // const tax = subtotal * 0.02;
-    
-    // Apply promo discount (10% off)
     const discount = promoApplied ? subtotal * 0.1 : 0;
-    
     const total = subtotal + shipping + tax - discount;
     
     return { 
@@ -109,7 +119,7 @@ const Cart = () => {
       total,
       itemCount: totalQuantity
     };
-  }, [cartItems, promoApplied]);
+  }, [cartItems, promoApplied, user]); // Added user to dependencies
 
   // Cleanup timeouts on unmount
   useEffect(() => {
@@ -124,12 +134,10 @@ const Cart = () => {
   const debouncedUpdate = useCallback((productId, size, quantity) => {
     const key = `${productId}-${size}`;
     
-    // Clear existing timeout
     if (updateTimeouts.current[key]) {
       clearTimeout(updateTimeouts.current[key]);
     }
     
-    // Set new timeout
     updateTimeouts.current[key] = setTimeout(() => {
       setIsUpdating(prev => ({ ...prev, [key]: true }));
       
@@ -139,7 +147,6 @@ const Cart = () => {
         quantity 
       }));
       
-      // Clear updating state after a delay
       setTimeout(() => {
         setIsUpdating(prev => ({ ...prev, [key]: false }));
       }, 300);
@@ -147,19 +154,15 @@ const Cart = () => {
   }, [dispatch]);
 
   // Handle quantity change
-// Handle quantity change
   const handleQuantityChange = useCallback((productId, size, newQuantity) => {
     const key = `${productId}-${size}`;
     
-    // Validate quantity
     if (newQuantity < 1) newQuantity = 1;
     
-    // Find cart item to check stock
     const cartItem = cartItems.find(
       item => item.productId === productId && item.size === size
     );
     
-    // FIX: Use maxQuantity (per-size stock) instead of countInStock (total stock)
     const maxStock = cartItem.maxQuantity !== undefined ? cartItem.maxQuantity : cartItem.countInStock;
     
     if (cartItem && newQuantity > maxStock) {
@@ -167,13 +170,11 @@ const Cart = () => {
       newQuantity = maxStock;
     }
     
-    // Optimistic local update
     setLocalQuantities(prev => ({
       ...prev,
       [key]: newQuantity
     }));
     
-    // Debounced Redux update
     debouncedUpdate(productId, size, newQuantity);
   }, [cartItems, debouncedUpdate]);
 
@@ -183,31 +184,15 @@ const Cart = () => {
     toast.success('Item removed from cart');
   }, [dispatch]);
 
-  // Handle promo code
-  const handleApplyPromo = () => {
-    if (promoCode.trim() === '') {
-      toast.error('Please enter a promo code');
-      return;
-    }
-    
-    // For demo, accept any code
-    setPromoApplied(true);
-    toast.success('Promo code applied!');
-    setPromoCode('');
-  };
-
   // Handle checkout
   const handleCheckout = useCallback(() => {
     if (cartItems.length === 0) {
       toast.error('Your cart is empty');
       return;
     }
-    
-    // Navigate to checkout
     navigate('/checkout');
   }, [cartItems, navigate]);
 
-  // Show empty cart
   if (cartItems.length === 0) {
     return <EmptyCart />;
   }
@@ -215,8 +200,6 @@ const Cart = () => {
   return (
     <div className="cart-page">
       <div className="cart-container">
-        {/* Header */}
-       {/* Header */}
         <div className="cart-header">
           <h1 className="cart-title">Shopping Cart</h1>
           <p className="cart-subtitle">
@@ -225,7 +208,6 @@ const Cart = () => {
         </div>
 
         <div className="cart-grid">
-          {/* Cart Items */}
           <div className="cart-items-column">
             <div className="cart-items-container">
               <AnimatePresence>
@@ -258,37 +240,6 @@ const Cart = () => {
               </AnimatePresence>
             </div>
 
-            {/* Promo Code Section */}
-            {/* <div className="promo-section">
-              <div className="promo-input-group">
-                <input
-                  type="text"
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
-                  placeholder="Promo code"
-                  className="promo-input"
-                  disabled={promoApplied}
-                />
-                <button
-                  onClick={handleApplyPromo}
-                  className="promo-btn"
-                  disabled={promoApplied}
-                >
-                  {promoApplied ? 'Applied' : 'Apply'}
-                </button>
-              </div>
-              {promoApplied && (
-                <div className="promo-success">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" 
-                      stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span>Promo code applied! 10% discount</span>
-                </div>
-              )}
-            </div> */}
-
-            {/* Continue Shopping */}
             <div className="continue-shopping">
               <button
                 onClick={() => navigate('/products')}
@@ -302,7 +253,6 @@ const Cart = () => {
             </div>
           </div>
 
-          {/* Order Summary */}
           <div className="cart-summary-column">
             <CartSummary
               subtotal={cartTotals.subtotal}

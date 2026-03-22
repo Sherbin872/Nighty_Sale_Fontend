@@ -45,7 +45,8 @@ const Checkout = () => {
   const { items: cartItems, total: cartTotal } = useSelector(
     (state) => state.cart,
   );
-  const { userInfo } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
+  console.log("rrrrrrrrrrrrrrrrrrrrrrrrr Info:", user);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -56,7 +57,7 @@ const Checkout = () => {
     postalCode: "",
     country: "India",
     phone: "",
-    email: userInfo?.email || "",
+    email: user?.email || "",
   });
 
   // UI state
@@ -66,11 +67,11 @@ const Checkout = () => {
   const [orderId, setOrderId] = useState(null);
   console.log("cartItems:", cartItems);
 
-  // Calculate order summary using the service
-
+// Calculate order summary using the service
   const orderSummary = useMemo(() => {
-    return checkoutService.getOrderSummary(cartItems);
-  }, [cartItems]);
+    // PASS THE LIVE TYPED POSTAL CODE!
+    return checkoutService.getOrderSummary(cartItems, formData.postalCode);
+  }, [cartItems, formData.postalCode]); // Dependency updated to listen to the live form
 
   // Calculate totals for display
   const orderTotals = useMemo(() => {
@@ -99,19 +100,19 @@ const Checkout = () => {
 
   // Load user data if logged in
   useEffect(() => {
-    if (userInfo) {
+    if (user) {
       setFormData((prev) => ({
         ...prev,
-        email: userInfo.email,
-        firstName: userInfo.firstName || "",
-        lastName: userInfo.lastName || "",
-        address: userInfo.address || "",
-        city: userInfo.city || "",
-        postalCode: userInfo.postalCode || "",
-        phone: userInfo.phone || "",
+        email: user.email,
+        firstName: user.name || "",
+        lastName: user.lastName || "",
+        address: user.address.street || "",
+        city: user.city || "",
+        postalCode: user.address.postalCode || "",
+        phone: user.phone || "",
       }));
     }
-  }, [userInfo]);
+  }, [user]);
 
   // Validate shipping form using the service
   const validateShippingForm = () => {
@@ -204,7 +205,7 @@ const Checkout = () => {
         cartItems: preparedCartItems,
         shippingAddress: prepareShippingAddress(),
         paymentMethod: "Razorpay",
-        userInfo: userInfo,
+        user: user,
         onStepChange: (step) => {
           setCheckoutStep(step);
           console.log(`Checkout step: ${step}`);
@@ -401,11 +402,11 @@ const Checkout = () => {
                     onChange={handleInputChange}
                     className="form-input"
                     required
-                    disabled={!!userInfo?.email}
+                    disabled={!!user?.email}
                   />
-                  {userInfo?.email && (
+                  {user?.email && (
                     <small className="form-note">
-                      Logged in as {userInfo.email}
+                      Logged in as {user.email}
                     </small>
                   )}
                 </div>
