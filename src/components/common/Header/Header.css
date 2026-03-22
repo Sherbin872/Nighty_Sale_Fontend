@@ -32,7 +32,10 @@
   /* background: rgba(163, 212, 143, 0.95); */
   backdrop-filter: blur(10px);
 }
-
+.lin{
+  display: flex;
+  align-items: center;
+}
 .header-content {
   height: 100%;
   width: 100%;
@@ -41,7 +44,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 2.5rem;
+  padding: 0.7rem 2.5rem;
 }
 .mobile_logo {
   display: none !important;
@@ -49,6 +52,10 @@
 .mainLogo{
   height: 40px !important;
 }
+.angelLogo{
+  height: 50px !important;
+}
+
 /* Logo */
 .logo img {
   /* height: 50px; */
@@ -496,6 +503,10 @@
   .mainLogo {
     /* display: none !important; */
     height: 30px !important;
+  }
+  .angelLogo {
+    /* display: none !important; */
+    height: 35px !important;
   }
   /* .mobile_logo{
     display: flex !important;

@@ -84,11 +84,17 @@ const Header = () => {
     <header className={`header ${scrolled ? "scrolled" : ""}`}>
       <div className="header-content">
         <div className="logo">
-          <Link to="/" onClick={closeMobileMenu}>
+          <Link className="lin" to="/" onClick={closeMobileMenu}>
             <img
               className="mainLogo"
               height={40}
               src="https://res.cloudinary.com/diclfmeg4/image/upload/v1773988736/manavaatti-logo_evv92c.png"
+              alt=""
+            />
+            <img
+              className="angelLogo"
+              height={40}
+              src="https://res.cloudinary.com/diclfmeg4/image/upload/v1774197135/IMG-20260322-WA0009-removebg-preview_zvipsu.png"
               alt=""
             />
           </Link>
