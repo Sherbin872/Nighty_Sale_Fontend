@@ -314,7 +314,7 @@ const Register = () => {
 
           {/* 3. ADDED ADDRESS UI SECTION */}
           <div className="address-section" style={{ marginTop: '10px', paddingTop: '15px', borderTop: '1px solid #eee' }}>
-            <h3 style={{ fontSize: '1.1rem', marginBottom: '15px', color: '#333' }}>Shipping Details</h3>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '15px', color: '#333' }}>Address Info</h3>
             
             <Input
               label="Street Address / Flat No."
