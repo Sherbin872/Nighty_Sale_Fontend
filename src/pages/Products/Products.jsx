@@ -9,34 +9,49 @@ const Products = () => {
   const [searchParams] = useSearchParams();
   const category = searchParams.get('category');
   const keyword = searchParams.get('search') || '';
-  
+  const [page, setPage] = useState(1);
+const [hasMore, setHasMore] = useState(true);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      let data;
-      
-      if (category) {
-        data = await productApi.getProductsByCategory(category);
-      } else {
-        data = await productApi.getProducts(keyword);
-      }
-      
-      setProducts(data.products);
-      setError(null);
-    } catch (err) {
-      setError(err.message || 'Failed to load products');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchProducts = async (pageNum = 1) => {
+  try {
+    setLoading(true);
+    let data;
 
-  useEffect(() => {
-    fetchProducts();
-  }, [category, keyword]);
+    if (category) {
+      data = await productApi.getProductsByCategory(category, pageNum);
+    } else {
+      data = await productApi.getProducts(keyword, pageNum);
+    }
+
+    if (pageNum === 1) {
+      setProducts(data.products);
+    } else {
+      setProducts(prev => [...prev, ...data.products]);
+    }
+
+    setHasMore(data.page < data.pages);
+    setError(null);
+  } catch (err) {
+    setError(err.message || 'Failed to load products');
+  } finally {
+    setLoading(false);
+  }
+};
+
+useEffect(() => {
+  setPage(1);
+  fetchProducts(1);
+}, [category, keyword]);
+
+const handleLoadMore = () => {
+  const nextPage = page + 1;
+  setPage(nextPage);
+  fetchProducts(nextPage);
+};
+
 
   return (
     <div className="products-page">
@@ -57,7 +72,8 @@ const Products = () => {
           products={products}
           loading={loading}
           error={error}
-          hasMore={false}
+  hasMore={hasMore}         
+  onLoadMore={handleLoadMore}
           gridColumns={4}
           showFilters={true}
           emptyMessage={
