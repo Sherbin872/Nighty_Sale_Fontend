@@ -1,6 +1,7 @@
 // src/components/common/Header/Header.jsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux"; // 1. ADDED THIS IMPORT
 import {
   FiSearch,
   FiShoppingCart,
@@ -17,6 +18,15 @@ const Header = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  // 2. FETCH CART ITEMS FROM REDUX
+  const { items: cartItems = [] } = useSelector((state) => state.cart);
+
+  // 3. CALCULATE REAL CART COUNT (Total physical items)
+  const cartCount = cartItems.reduce(
+    (sum, item) => sum + (item.quantity || item.qty || 1),
+    0
+  );
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -70,39 +80,11 @@ const Header = () => {
     };
   }, [mobileMenuOpen]);
 
-  let cartCount = 0; // This should come from your cart state/context
-
   return (
     <header className={`header ${scrolled ? "scrolled" : ""}`}>
       <div className="header-content">
-        {/* Logo */}
-        {/* <div className="logo">
-          <Link to="/" onClick={closeMobileMenu}>
-            <img
-              className="mainLogo"
-              height={95}
-              src="https://res.cloudinary.com/de1gl8ka7/image/upload/v1771772044/manavaati_y1ei4k.jpg"
-              alt=""
-            />
-            <img
-              className="mobile_logo"
-              src="https://res.cloudinary.com/de1gl8ka7/image/upload/v1771772701/mobile_xtaoww.jpg"
-              alt=""
-            />
-          </Link>
-        </div> */}
         <div className="logo">
           <Link to="/" onClick={closeMobileMenu}>
-           
-            {/* <h1
-              className="logo-text logo-fontstyle"
-              style={{
-                fontFamily: "Monotype Corsiva, Times, Serif",
-                height: "46px",
-              }}
-            >
-              Manavaatti
-            </h1> */}
             <img
               className="mainLogo"
               height={40}
@@ -157,23 +139,6 @@ const Header = () => {
                   <span className="cart-count">{cartCount}</span>
                 )}
               </Link>
-
-              {/* Dark Mode */}
-              {/* <div
-                className="icon-btn"
-                onClick={toggleDarkMode}
-                aria-label="Toggle Dark Mode"
-              >
-                {darkMode ? <FiSun size={22} /> : <FiMoon size={22} />}
-              </div> */}
-
-              {/* User Menu Dropdown (Optional) */}
-              {/* <div className="user-menu-dropdown">
-                <span className="user-greeting">Hi, {user?.name?.split(' ')[0] || 'User'}</span>
-                <button onClick={logout} className="logout-btn">
-                  Logout
-                </button>
-              </div> */}
             </div>
           ) : (
             <div className="auth-buttons">
@@ -189,15 +154,6 @@ const Header = () => {
 
         {/* Mobile Menu Toggle */}
         <div className="mobile-menu-toggle">
-          {/* Dark Mode Toggle for Mobile */}
-          {/* <div
-            className="icon-btn mobile-dark-mode"
-            onClick={toggleDarkMode}
-            aria-label="Toggle Dark Mode"
-          >
-            {darkMode ? <FiSun size={22} /> : <FiMoon size={22} />}
-          </div> */}
-
           {/* Cart Icon for Mobile */}
           <Link to="/cart" className="icon-btn mobile-cart" aria-label="Cart">
             <FiShoppingCart size={22} />
@@ -300,7 +256,7 @@ const Header = () => {
             )}
           </div>
 
-          {/* Mobile Search (Optional) */}
+          {/* Mobile Search */}
           <div className="mobile-search">
             <Link to="/search" onClick={closeMobileMenu}>
               <div className="mobile-search-box">

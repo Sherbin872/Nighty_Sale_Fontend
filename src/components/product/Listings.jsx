@@ -226,8 +226,14 @@ const Listings = ({
   if (loading && (!products?.length)) {
     return (
       <div className="listings-loading">
-        <Loader size="large" />
-        <p>Loading products...</p>
+        {/* <Loader size="large" />
+        <p>Loading products...</p> */}
+          <section className="loader">
+      <div className="slider" style={{ "--i": 0 }}></div>
+      <div className="slider" style={{ "--i": 1 }}></div>
+      <div className="slider" style={{ "--i": 2 }}></div>
+      <div className="slider" style={{ "--i": 3 }}></div>
+    </section>
       </div>
     );
   }
@@ -237,7 +243,7 @@ const Listings = ({
     return (
       <div className="listings-error">
         <div className="error-icon">⚠️</div>
-        <h3>Something went wrong</h3>
+        <h3>Network Connection Error</h3>
         <p>{error}</p>
         <button 
           onClick={() => window.location.reload()} 
