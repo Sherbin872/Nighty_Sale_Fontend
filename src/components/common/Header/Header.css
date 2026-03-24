@@ -293,7 +293,7 @@
   background: white;
   width: 100%;
   max-width: 400px;
-  margin-top: -40px;
+  /* margin-top: -40px; */
   height: 100%;
   margin-left: auto;
   padding: 2rem;
