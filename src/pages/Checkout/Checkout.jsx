@@ -48,6 +48,10 @@ const Checkout = () => {
   const { user } = useSelector((state) => state.auth);
   console.log("rrrrrrrrrrrrrrrrrrrrrrrrr Info:", user);
 
+
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
   // Form state
   const [formData, setFormData] = useState({
     firstName: "",

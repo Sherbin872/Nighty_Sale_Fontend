@@ -37,6 +37,10 @@ const ProductDetails = () => {
   // Get cart items for stock validation
   const cartItems = useSelector((state) => state.cart.items);
 
+
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
   // Fetch product details
   useEffect(() => {
     const fetchProduct = async () => {

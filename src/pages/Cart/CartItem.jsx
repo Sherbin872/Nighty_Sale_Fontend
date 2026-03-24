@@ -1,10 +1,12 @@
-import React, { memo } from "react";
+import React, { memo,useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./CartItem.css";
 import { FiTrash2 } from "react-icons/fi";
 
 
 const CartItem = memo(
+
+  
   ({ item, localQuantity, onQuantityChange, onRemove, isUpdating, maxStock }) => {
     const { name, price, image, size, productId } = item;
 
@@ -35,6 +37,9 @@ const CartItem = memo(
       const value = parseInt(e.target.value) || 1;
       onQuantityChange(value);
     };
+    useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
 
     return (
       <div className={`cart-item ${isUpdating ? "updating" : ""}`}>

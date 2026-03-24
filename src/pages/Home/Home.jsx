@@ -13,7 +13,9 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState("all");
   const collectionsRef = useRef(null);
-
+useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
   const fetchProducts = async (pageNum = 1, category = "") => {
     try {
       setLoading(true);
