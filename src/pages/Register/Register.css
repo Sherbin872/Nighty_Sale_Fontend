@@ -1,15 +1,14 @@
 /* src/pages/Register/Register.css */
-:root{
-  
-   --brown: #550000;
+:root {
+  --brown: #550000;
   --text-main: #550000;
   --text-light: #424242;
   --white: #ffffff;
   --shadow: rgba(0, 0, 0, 0.1);
-  --pink:#fdfaf5;
+  --pink: #fdfaf5;
 }
 .register-page {
-  margin-top: 60px;
+  padding-top: 60px;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -17,9 +16,9 @@
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   /* padding: 2rem; */
 }
-.mybtn{
-  border: 1px solid var(--brown)  !important;
-  color: var(--brown)  !important;
+.mybtn {
+  border: 1px solid var(--brown) !important;
+  color: var(--brown) !important;
 }
 .register-container {
   width: 100%;

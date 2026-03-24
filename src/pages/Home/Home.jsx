@@ -1,76 +1,74 @@
 // src/pages/Home/Home.jsx
-import React, { useState, useEffect, useRef } from 'react';
-import { productApi } from '../../api/productApi';
-import Listings from '../../components/product/Listings';
-import './Home.css';
+import React, { useState, useEffect, useRef } from "react";
+import { productApi } from "../../api/productApi";
+import Listings from "../../components/product/Listings";
+import "./Home.css";
 
 const Home = () => {
-  
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [categories, setCategories] = useState([]);
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState("all");
   const collectionsRef = useRef(null);
 
-  const fetchProducts = async (pageNum = 1, category = '') => {
-  try {
-    setLoading(true);
-    let data;
+  const fetchProducts = async (pageNum = 1, category = "") => {
+    try {
+      setLoading(true);
+      let data;
 
-    if (category && category !== 'all') {
-      data = await productApi.getProductsByCategory(category, pageNum);
-      console.log("datas: ",data);
-      
-    } else {
-      data = await productApi.getProducts('', pageNum);
+      if (category && category !== "all") {
+        data = await productApi.getProductsByCategory(category, pageNum);
+        console.log("datas: ", data);
+      } else {
+        data = await productApi.getProducts("", pageNum);
+      }
+
+      if (pageNum === 1) {
+        setProducts(data.products);
+      } else {
+        setProducts((prev) => [...prev, ...data.products]);
+      }
+
+      setHasMore(data.page < data.pages);
+      setError(null);
+    } catch (err) {
+      setError(err.message || "Failed to load products");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    if (pageNum === 1) {
-      setProducts(data.products);
-    } else {
-      setProducts(prev => [...prev, ...data.products]);
-    }
-
-    setHasMore(data.page < data.pages);
-    setError(null);
-  } catch (err) {
-    setError(err.message || 'Failed to load products');
-  } finally {
-    setLoading(false);
-  }
-};
-
-const scrollToCollections = () => {
-  collectionsRef.current?.scrollIntoView({
-    behavior: 'smooth',
-    block: 'start'
-  });
-};
-
+  const scrollToCollections = () => {
+    collectionsRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   const fetchCategories = async () => {
     try {
       const data = await productApi.getProducts();
-      const uniqueCategories = [...new Set(data.products.map(p => p.category))].filter(Boolean);
+      const uniqueCategories = [
+        ...new Set(data.products.map((p) => p.category)),
+      ].filter(Boolean);
       setCategories(uniqueCategories);
     } catch (err) {
-      console.error('Failed to fetch categories:', err);
+      console.error("Failed to fetch categories:", err);
     }
   };
 
   useEffect(() => {
-  setPage(1);
-  fetchProducts(1, activeCategory);
-  console.log('Active category changed:', activeCategory);
-}, [activeCategory]);
+    setPage(1);
+    fetchProducts(1, activeCategory);
+    console.log("Active category changed:", activeCategory);
+  }, [activeCategory]);
 
-useEffect(() => {
-  fetchCategories();
-}, []);
-
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   // useEffect(() => {
   //   fetchProducts(1, activeCategory);
@@ -90,6 +88,25 @@ useEffect(() => {
 
   return (
     <div className="home-page">
+      <marquee behavior="scroll" direction="left">
+        Buy 3 Nighties & Enjoy FREE Shipping!{" "}
+        <img
+          src="https://www.francisxavier.ac.in/cs-content/themes/fxec/images/new-icon.gif"
+          alt=""
+        />{" "}
+        &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        Welcome to Manavaatti! Enjoy exclusive deals and premium products.
+        <img
+          src="https://www.francisxavier.ac.in/cs-content/themes/fxec/images/new-icon.gif"
+          alt=""
+        />{" "}
+        &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        Grab 3 Nighties & Unlock Free Delivery!
+        <img
+          src="https://www.francisxavier.ac.in/cs-content/themes/fxec/images/new-icon.gif"
+          alt=""
+        />
+      </marquee>
       {/* Hero Section */}
       <div className="hero-section">
         <div className="hero-background">
@@ -98,10 +115,13 @@ useEffect(() => {
               <span className="hero-badge">Exclusive Comfort</span>
               <h1 className="hero-title">Where Comfort Meets Elegance</h1>
               <p className="hero-subtitle">
-                Rediscover relaxation with our premium sage-inspired lounge collection.
-              </p>  
+                Rediscover relaxation with our premium sage-inspired lounge
+                collection.
+              </p>
               <div className="hero-buttons">
-                <button className="btn-primary" onClick={scrollToCollections}>Shop Now</button>
+                <button className="btn-primary" onClick={scrollToCollections}>
+                  Shop Now
+                </button>
                 {/* <button className="btn-secondary">Our Story</button> */}
               </div>
             </div>
@@ -135,7 +155,6 @@ useEffect(() => {
         <div className="section-header">
           <span className="section-title">Our Collections</span>
           {/* <a href="#" className="section-link">Explore All ↗</a> */}
-         
         </div>
 
         {/* <div className="featured-products-grid">
@@ -182,7 +201,7 @@ useEffect(() => {
             ))
           )}
         </div> */}
-          <Listings
+        <Listings
           products={products} // Skip first 4 featured products
           loading={loading}
           error={error}
