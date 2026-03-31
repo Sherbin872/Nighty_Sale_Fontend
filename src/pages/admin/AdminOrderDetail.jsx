@@ -156,13 +156,13 @@ const AdminOrderDetail = () => {
 
     doc.setFont("helvetica", "normal");
     currentY += 0.15;
-    doc.text("Manavaatti", 0.25, currentY);
+    doc.text("Manavaatti Clothing", 0.25, currentY);
     currentY += 0.15;
-    doc.text("123 Your Street Name, Building No", 0.25, currentY); // UPDATE THIS
+    doc.text("Bharath Tailors, 3G, 6th Number Road", 0.25, currentY); // UPDATE THIS
     currentY += 0.15;
-    doc.text("Your City, State, PIN-123456", 0.25, currentY); // UPDATE THIS
+    doc.text("Kallidaikurichi, Tirunelveli, Tamilnadu, 627416", 0.25, currentY); // UPDATE THIS
     currentY += 0.15;
-    doc.text("Ph: +91 9876543210", 0.25, currentY); // UPDATE THIS
+    doc.text("Ph: +91 8807888122", 0.25, currentY); // UPDATE THIS
 
     // Save the PDF
     doc.save(
