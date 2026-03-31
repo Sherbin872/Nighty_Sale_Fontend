@@ -237,9 +237,7 @@ export const checkoutService = {
   },
 };
 
-/* =======================
-   RAZORPAY SERVICE
-======================= */
+
 /* =======================
    RAZORPAY SERVICE
 ======================= */
@@ -260,7 +258,7 @@ export const razorpayService = {
       key,
       amount: order.amount,
       currency: order.currency,
-      name: "Nighty Store",
+      name: "Manavaatti Store",
       description: `Order #${dbOrderId}`,
       order_id: order.id,
 
@@ -271,11 +269,11 @@ export const razorpayService = {
         netbanking: true,
       },
 
-      // NEW: Catch when user manually closes the Razorpay modal
+      // Cleanup ONLY happens if the user completely closes the modal window
       modal: {
         ondismiss: async function () {
           try {
-            console.log('User closed payment modal. Deleting unpaid order...');
+            console.log('User completely closed payment modal. Deleting unpaid order...');
             await orderApi.deleteOrder(dbOrderId);
             onFailure('Payment cancelled by user');
           } catch (err) {
@@ -294,7 +292,6 @@ export const razorpayService = {
           await orderApi.updateOrderToPaid(dbOrderId, response);
           onSuccess(dbOrderId);
         } catch {
-          // NEW: Delete order if verification fails
           await orderApi.deleteOrder(dbOrderId).catch(console.error);
           onFailure("Payment verification failed. Order removed.");
         }
@@ -307,36 +304,16 @@ export const razorpayService = {
       },
     });
 
-    // NEW: Catch when a payment actually fails (declined card, wrong UPI pin, etc.)
-    rzp.on('payment.failed', async function (response) {
-      try {
-        console.log('Payment failed. Deleting unpaid order...');
-        await orderApi.deleteOrder(dbOrderId);
-        onFailure(`Payment Failed: ${response.error.description}`);
-      } catch (err) {
-        console.error('Failed to delete order after payment failure', err);
-        onFailure('Payment Failed');
-      }
+    // THE FIX: Do NOT delete the order here! Just log it.
+    // Razorpay keeps the modal open so the user can retry.
+    rzp.on('payment.failed', function (response) {
+      console.log('Payment attempt failed. Waiting for user to retry...', response.error.description);
+      // We purposefully do not call onFailure() here because that would stop the frontend loading spinner, 
+      // even though the Razorpay modal is still open for a retry.
     });
 
     rzp.open();
   },
-
-  // /* =============================
-  //    DEV MODE PAYMENT BYPASS
-  // ============================== */
-  // let VITE_SKIP_PAYMENT = 'true'
-  // if (VITE_SKIP_PAYMENT === 'true') {
-  //   console.warn('⚠️ DEV MODE: Payment bypassed');
-  //   const fakePayment = {
-  //     razorpay_order_id: 'DEV_ORDER_ID',
-  //     razorpay_payment_id: 'DEV_PAYMENT_ID',
-  //     razorpay_signature: 'DEV_SIGNATURE',
-  //   };
-  //   await orderApi.updateOrderToPaid(dbOrderId, fakePayment);
-  //   onSuccess(dbOrderId);
-  //   return;
-  // }
 
   loadRazorpayScript: () =>
     new Promise((resolve) => {
